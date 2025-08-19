@@ -48,3 +48,59 @@ menu:
       - "Ustawienie parametru testu"
       - "TEST SZCZELNOŚCI MASKI"
       - "Odpowietrzenie systemu"
+
+  - name: "Nawigacja PDF"
+    key: "pdf_pages"
+    options:
+      - label: "Strona 1"
+        page: 1
+      - label: "Strona 2"
+        page: 2
+      - label: "Strona 3"
+        page: 3
+      - label: "Strona 4"
+        page: 4
+      - label: "Strona 5"
+        page: 5
+      - label: "Strona 6"
+        page: 6
+      - label: "Strona 7"
+        page: 7
+      - label: "Strona 8"
+        page: 8
+      - label: "Strona 9"
+        page: 9
+      - label: "Strona 10"
+        page: 10
+      - label: "Strona 11"
+        page: 11
+      - label: "Strona 12"
+        page: 12
+      - label: "Strona 13"
+        page: 13
+      - label: "Strona 14"
+        page: 14
+      - label: "Strona 15"
+        page: 15
+      - label: "Strona 16"
+        page: 16
+      - label: "Strona 17"
+        page: 17
+      - label: "Strona 18"
+        page: 18
+      - label: "Strona 19"
+        page: 19
+      - label: "Strona 20"
+        page: 20
+      - label: "Strona 21"
+        page: 21
+      - label: "Strona 22"
+        page: 22
+      - label: "Strona 23"
+        page: 23
+      - label: "Strona 24"
+        page: 24
+      - label: "Strona 25"
+        page: 25
+      - label: "Strona 26"
+        page: 26
