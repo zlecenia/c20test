@@ -1,13 +1,36 @@
-version: "3.8"
 services:
-  backend:
-    build: ./backend
-    env_file: .env
-    ports:
-      - "5000:5000"
   frontend:
     build: ./frontend
     ports:
-      - "3000:80"
+      - "80:80"
     depends_on:
       - backend
+    networks:
+      - c20-network
+
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - HARDWARE_MODE=${HARDWARE_MODE:-mock}
+      - DEVICE_NAME=${DEVICE_NAME:-CONNECT 500}
+      - DEVICE_TYPE=${DEVICE_TYPE:-C20}
+    volumes:
+      - ./backend/menu.yaml:/app/menu.yaml
+    networks:
+      - c20-network
+
+  nodejs-api:
+    build: ./nodejs-api
+    ports:
+      - "3001:3001"
+    depends_on:
+      - backend
+    networks:
+      - c20-network
+
+networks:
+  c20-network:
+    driver: bridge

@@ -1,10 +1,17 @@
 from flask import Flask, jsonify, send_from_directory, request
-import os, json, time, math, random, yaml
+import os
+import json
+import time
+import math
+import random
+import yaml
+from flask_cors import CORS
 from dotenv import load_dotenv
 
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MENU_YAML = os.path.join(BASE_DIR, "menu.yaml")
@@ -16,14 +23,14 @@ def read_menu():
 def env_config():
     return {
         "API_URL": os.getenv("API_URL", "http://localhost:5000"),
-        "DEVICE_NAME": os.getenv("DEVICE_NAME", "TesterMSA"),
-        "DEVICE_TYPE": os.getenv("DEVICE_TYPE", "PressureSystem"),
-        "IP_HOST": os.getenv("IP_HOST", "localhost"),
+        "DEVICE_NAME": os.getenv("DEVICE_NAME", "CONNECT 500"),
+        "DEVICE_TYPE": os.getenv("DEVICE_TYPE", "C20"),
+        "IP_HOST": os.getenv("IP_HOST", "192.168.1.10"),
         "PORT": int(os.getenv("PORT", "8080")),
         "HARDWARE_MODE": os.getenv("HARDWARE_MODE", "mock")
     }
 
-# --- hardware abstraction ---
+# Hardware abstraction
 try:
     import serial  # type: ignore
 except Exception:
@@ -38,19 +45,18 @@ def read_hardware_values():
             with serial.Serial(port, baudrate=baud, timeout=0.5) as ser:
                 ser.write(b"READ\n")
                 line = ser.readline().decode("utf-8").strip()
-                # expected CSV: low,mid,high
+                # Expected CSV: low,mid,high
                 low, mid, high = [float(x) for x in line.split(",")]
                 return low, mid, high
         except Exception as e:
-            # fallback to mock on error
             pass
 
-    # mock data: smoothly varying + noise
+    # Mock data with realistic values
     t = time.time()
-    low = 50 + 20*math.sin(t/3.0) + random.uniform(-1,1)
-    mid = 150 + 30*math.sin(t/5.0) + random.uniform(-2,2)
-    high = 300 + 50*math.sin(t/7.0) + random.uniform(-3,3)
-    return round(low,2), round(mid,2), round(high,2)
+    low = 80.5 + 20*math.sin(t/3.0) + random.uniform(-1,1)
+    mid = 115.4 + 30*math.sin(t/5.0) + random.uniform(-2,2)
+    high = 150.2 + 50*math.sin(t/7.0) + random.uniform(-3,3)
+    return round(low,1), round(mid,1), round(high,1)
 
 @app.get("/api/menu")
 def api_menu():
@@ -63,33 +69,53 @@ def api_config():
 @app.get("/api/sensors")
 def api_sensors():
     low, mid, high = read_hardware_values()
+    menu_data = read_menu()
+    sensors = menu_data.get("pressure_sensors", {})
+
     return jsonify({
         "labels": {
-            "low": "etykieta niskiego ciśnienia",
-            "mid": "etykieta średniego ciśnienia",
-            "high": "etykieta wysokiego ciśnienia"
+            "low": sensors.get("low", {}).get("label", "Niskie"),
+            "mid": sensors.get("medium", {}).get("label", "Średnie"),
+            "high": sensors.get("high", {}).get("label", "Wysokie")
         },
         "values": {
             "low": low,
             "mid": mid,
             "high": high
         },
-        "unit": "kPa",
+        "units": {
+            "low": sensors.get("low", {}).get("unit", "mbar"),
+            "mid": sensors.get("medium", {}).get("unit", "bar"),
+            "high": sensors.get("high", {}).get("unit", "bar")
+        },
         "device": {
-            "name": os.getenv("DEVICE_NAME", "TesterMSA"),
-            "type": os.getenv("DEVICE_TYPE", "PressureSystem"),
-            "endpoint": f"{os.getenv('IP_HOST','localhost')}:{os.getenv('PORT','8080')}"
-        }
+            "name": os.getenv("DEVICE_NAME", "CONNECT 500"),
+            "type": os.getenv("DEVICE_TYPE", "C20"),
+            "endpoint": f"{os.getenv('IP_HOST','192.168.1.10')}:{os.getenv('PORT','8080')}"
+        },
+        "status": "System Ready",
+        "timestamp": time.strftime("%H:%M:%S")
     })
 
 @app.get("/api/status")
 def api_status():
-    return jsonify({"status":"ok","time":time.time()})
+    return jsonify({
+        "status": "ok",
+        "time": time.time(),
+        "uptime": "02:34:21"
+    })
 
-# static passthrough to serve the PDF-derived pages if mounted
+@app.post("/api/login")
+def api_login():
+    data = request.json
+    # Simple login logic
+    if data.get("username") == "admin" and data.get("password") == "admin":
+        return jsonify({"success": True, "role": "operator", "username": "admin@softreck.com"})
+    return jsonify({"success": False, "message": "Invalid credentials"})
+
 @app.get("/pages/<path:filename>")
 def serve_pages(filename):
-    root = os.getenv("PAGES_DIR", os.path.join(os.path.dirname(BASE_DIR), "frontend", "pages"))
+    root = os.path.join(os.path.dirname(BASE_DIR), "frontend", "pages")
     return send_from_directory(root, filename)
 
 if __name__ == "__main__":
