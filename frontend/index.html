@@ -362,14 +362,14 @@
 </div>
 
 <script>
-    const API = window.location.origin.replace(':3000', ':5000');
+    const API = '/api';
     let menuData = null;
     let currentUser = null;
     let currentSection = null;
 
     async function loadConfig() {
         try {
-            const res = await fetch(API + '/api/config');
+            const res = await fetch(API + '/config');
             return await res.json();
         } catch(e) {
             console.error('Config load error:', e);
@@ -378,7 +378,7 @@
 
     async function loadMenu() {
         try {
-            const res = await fetch(API + '/api/menu');
+            const res = await fetch(API + '/menu');
             const data = await res.json();
             menuData = data;
             return data;
@@ -502,7 +502,7 @@
 
     async function updateSensors() {
         try {
-            const res = await fetch(API + '/api/sensors');
+            const res = await fetch(API + '/sensors');
             const data = await res.json();
 
             document.getElementById('valLow').textContent = data.values.low;
