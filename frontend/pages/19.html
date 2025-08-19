@@ -1,1 +1,269 @@
-<!doctype html><html><body><h1>Strona PDF 19</h1><p>Tu wstaw treść odpowiadającą stronie 19 z PDF (osobny plik HTML w iframe).</p></body></html>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Rodzaj Urządzenia</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 40px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 700px;
+            width: 100%;
+        }
+
+        .title {
+            font-size: 42px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 18px;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .device-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .device-card {
+            background: rgba(255,255,255,0.2);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            border: 3px solid transparent;
+        }
+
+        .device-card:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-5px);
+        }
+
+        .device-card.selected {
+            border-color: rgba(16, 185, 129, 0.8);
+            background: rgba(16, 185, 129, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .device-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .device-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .device-description {
+            font-size: 14px;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+
+        .custom-device {
+            grid-column: 1 / -1;
+            background: rgba(255,255,255,0.1);
+            border: 2px dashed rgba(255,255,255,0.4);
+        }
+
+        .custom-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 16px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .custom-input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .custom-input:focus {
+            outline: none;
+            border-color: rgba(255,255,255,0.6);
+            background: rgba(255,255,255,0.2);
+        }
+
+        .continue-btn {
+            padding: 15px 40px;
+            background: rgba(16, 185, 129, 0.8);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .continue-btn:hover {
+            background: rgba(16, 185, 129, 1);
+            transform: translateY(-2px);
+        }
+
+        .continue-btn:disabled {
+            background: rgba(255,255,255,0.3);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .selected-indicator {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #10b981;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .device-card.selected .selected-indicator {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="title">🛡️ RODZAJ URZĄDZENIA</div>
+    <div class="subtitle">Wybierz rodzaj urządzenia, które będzie testowane</div>
+    
+    <div class="device-grid">
+        <div class="device-card" onclick="selectDevice(this)" data-device="pressure_mask">
+            <div class="selected-indicator">✓</div>
+            <div class="device-icon">😷</div>
+            <div class="device-name">Maska nadciśnieniowa</div>
+            <div class="device-description">Maska pełnotwarzowa z systemem nadciśnienia dla ochrony dróg oddechowych</div>
+        </div>
+        
+        <div class="device-card" onclick="selectDevice(this)" data-device="vacuum_mask">
+            <div class="selected-indicator">✓</div>
+            <div class="device-icon">🔽</div>
+            <div class="device-name">Maska podciśnieniowa</div>
+            <div class="device-description">Maska filtrująca z systemem podciśnienia i filtrami wymienialnymi</div>
+        </div>
+        
+        <div class="device-card" onclick="selectDevice(this)" data-device="pressure_apparatus">
+            <div class="selected-indicator">✓</div>
+            <div class="device-icon">🎒</div>
+            <div class="device-name">Aparat nadciśnieniowy</div>
+            <div class="device-description">Aparat oddechowy z butlą powietrza i systemem nadciśnienia</div>
+        </div>
+        
+        <div class="device-card" onclick="selectDevice(this)" data-device="escape_apparatus">
+            <div class="selected-indicator">✓</div>
+            <div class="device-icon">🚨</div>
+            <div class="device-name">Aparat ucieczkowy</div>
+            <div class="device-description">Aparat samozbawiczy do ewakuacji w sytuacjach awaryjnych</div>
+        </div>
+        
+        <div class="device-card" onclick="selectDevice(this)" data-device="air_cylinder">
+            <div class="selected-indicator">✓</div>
+            <div class="device-icon">🛢️</div>
+            <div class="device-name">Butla powietrzna</div>
+            <div class="device-description">Butla wysokociśnieniowa z powietrzem do oddychania</div>
+        </div>
+        
+        <div class="device-card custom-device" onclick="selectDevice(this)" data-device="custom">
+            <div class="selected-indicator">✓</div>
+            <div class="device-icon">✏️</div>
+            <div class="device-name">Inne - edytowalne</div>
+            <div class="device-description">Wprowadź nazwę urządzenia niestandardowego</div>
+            <input type="text" class="custom-input" id="customInput" placeholder="Wpisz nazwę urządzenia..." onclick="event.stopPropagation()">
+        </div>
+    </div>
+
+    <button class="continue-btn" id="continueBtn" disabled onclick="nextStep()">
+        Kontynuuj do wyboru typu →
+    </button>
+</div>
+
+<script>
+let selectedDevice = null;
+let customDeviceName = '';
+const continueBtn = document.getElementById('continueBtn');
+const customInput = document.getElementById('customInput');
+
+function selectDevice(element) {
+    // Remove selection from all cards
+    document.querySelectorAll('.device-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+    
+    // Select clicked card
+    element.classList.add('selected');
+    selectedDevice = element.dataset.device;
+    
+    // Show/hide custom input
+    if (selectedDevice === 'custom') {
+        customInput.style.display = 'block';
+        customInput.focus();
+        continueBtn.disabled = !customInput.value.trim();
+    } else {
+        customInput.style.display = 'none';
+        continueBtn.disabled = false;
+    }
+}
+
+function nextStep() {
+    if (selectedDevice) {
+        const deviceData = {
+            type: 'device_kind_selected',
+            device: selectedDevice,
+            customName: selectedDevice === 'custom' ? customInput.value.trim() : null,
+            navigate: 25
+        };
+        
+        window.parent.postMessage(deviceData, '*');
+    }
+}
+
+// Handle custom input
+customInput.addEventListener('input', function() {
+    customDeviceName = this.value.trim();
+    if (selectedDevice === 'custom') {
+        continueBtn.disabled = !customDeviceName;
+    }
+});
+
+// Auto-select first device for demo
+setTimeout(() => {
+    const firstDevice = document.querySelector('.device-card[data-device="pressure_mask"]');
+    if (firstDevice) {
+        selectDevice(firstDevice);
+    }
+}, 1000);
+</script>
+</body>
+</html>

@@ -1,1 +1,291 @@
-<!doctype html><html><body><h1>Strona PDF 5</h1><p>Tu wstaw treść odpowiadającą stronie 5 z PDF (osobny plik HTML w iframe).</p></body></html>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Wybór Klienta</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 40px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .title {
+            font-size: 42px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 18px;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .search-section {
+            background: rgba(255,255,255,0.2);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 30px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 16px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: rgba(255,255,255,0.6);
+            background: rgba(255,255,255,0.2);
+        }
+
+        .clients-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .client-item {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .client-item:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .client-item.selected {
+            background: rgba(16, 185, 129, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .client-info {
+            text-align: left;
+        }
+
+        .client-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .client-code {
+            font-size: 12px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .client-status {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .client-status.active {
+            background: #10b981;
+        }
+
+        .client-status.inactive {
+            background: #f59e0b;
+        }
+
+        .continue-btn {
+            padding: 15px 40px;
+            background: rgba(16, 185, 129, 0.8);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .continue-btn:hover {
+            background: rgba(16, 185, 129, 1);
+            transform: translateY(-2px);
+        }
+
+        .continue-btn:disabled {
+            background: rgba(255,255,255,0.3);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .scrollbar {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.3) transparent;
+        }
+
+        .scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="title">👥 WYBÓR KLIENTA</div>
+    <div class="subtitle">Wybierz klienta dla którego wykonywany jest test</div>
+    
+    <div class="search-section">
+        <input type="text" class="search-input" placeholder="Wpisz nazwę klienta lub kod..." id="searchInput">
+        
+        <div class="clients-list scrollbar" id="clientsList">
+            <div class="client-item" onclick="selectClient(this)" data-client="MSA_001">
+                <div class="client-info">
+                    <div class="client-name">MSA Safety Polska</div>
+                    <div class="client-code">MSA_001</div>
+                </div>
+                <div class="client-status active">AKTYWNY</div>
+            </div>
+            
+            <div class="client-item" onclick="selectClient(this)" data-client="FIREDEX_002">
+                <div class="client-info">
+                    <div class="client-name">Firedex Sp. z o.o.</div>
+                    <div class="client-code">FIREDEX_002</div>
+                </div>
+                <div class="client-status active">AKTYWNY</div>
+            </div>
+            
+            <div class="client-item" onclick="selectClient(this)" data-client="DRAEGER_003">
+                <div class="client-info">
+                    <div class="client-name">Dräger Safety Polska</div>
+                    <div class="client-code">DRAEGER_003</div>
+                </div>
+                <div class="client-status active">AKTYWNY</div>
+            </div>
+            
+            <div class="client-item" onclick="selectClient(this)" data-client="FENZY_004">
+                <div class="client-info">
+                    <div class="client-name">Fenzy Safety Sp. z o.o.</div>
+                    <div class="client-code">FENZY_004</div>
+                </div>
+                <div class="client-status inactive">NIEAKTYWNY</div>
+            </div>
+            
+            <div class="client-item" onclick="selectClient(this)" data-client="SCOTT_005">
+                <div class="client-info">
+                    <div class="client-name">Scott Safety Polska</div>
+                    <div class="client-code">SCOTT_005</div>
+                </div>
+                <div class="client-status active">AKTYWNY</div>
+            </div>
+            
+            <div class="client-item" onclick="selectClient(this)" data-client="AVON_006">
+                <div class="client-info">
+                    <div class="client-name">Avon Protection</div>
+                    <div class="client-code">AVON_006</div>
+                </div>
+                <div class="client-status active">AKTYWNY</div>
+            </div>
+        </div>
+    </div>
+
+    <button class="continue-btn" id="continueBtn" disabled onclick="nextStep()">
+        Kontynuuj →
+    </button>
+</div>
+
+<script>
+let selectedClient = null;
+const searchInput = document.getElementById('searchInput');
+const clientsList = document.getElementById('clientsList');
+const continueBtn = document.getElementById('continueBtn');
+
+function selectClient(element) {
+    // Remove selection from all items
+    document.querySelectorAll('.client-item').forEach(item => {
+        item.classList.remove('selected');
+    });
+    
+    // Select clicked item
+    element.classList.add('selected');
+    selectedClient = element.dataset.client;
+    continueBtn.disabled = false;
+}
+
+function filterClients() {
+    const searchTerm = searchInput.value.toLowerCase();
+    const clients = document.querySelectorAll('.client-item');
+    
+    clients.forEach(client => {
+        const name = client.querySelector('.client-name').textContent.toLowerCase();
+        const code = client.querySelector('.client-code').textContent.toLowerCase();
+        
+        if (name.includes(searchTerm) || code.includes(searchTerm)) {
+            client.style.display = 'flex';
+        } else {
+            client.style.display = 'none';
+        }
+    });
+}
+
+function nextStep() {
+    if (selectedClient) {
+        window.parent.postMessage({
+            type: 'client_selected',
+            client: selectedClient,
+            navigate: 6
+        }, '*');
+    }
+}
+
+// Add search functionality
+searchInput.addEventListener('input', filterClients);
+
+// Auto-select first client for demo
+setTimeout(() => {
+    const firstClient = document.querySelector('.client-item');
+    if (firstClient) {
+        selectClient(firstClient);
+    }
+}, 1000);
+</script>
+</body>
+</html>
