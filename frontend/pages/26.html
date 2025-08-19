@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Flow</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .flow-container {
+            display: grid;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .flow-item {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .flow-item:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .flow-item.selected {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: #ffffff;
+        }
+
+        .flow-name {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .flow-description {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 15px;
+        }
+
+        .flow-steps {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .flow-duration {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .control-panel {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn.primary {
+            background: rgba(59, 130, 246, 0.8);
+            border-color: rgba(59, 130, 246, 1);
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">🔄 Test Flow</div>
+            <div class="subtitle">Wybierz scenariusz testowy dla urządzenia</div>
+        </div>
+
+        <div class="flow-container">
+            <div class="flow-item" data-flow="1">
+                <div class="flow-duration">~15 min</div>
+                <div class="flow-name">Scenariusz testowy 1</div>
+                <div class="flow-description">Podstawowy test szczelności i funkcjonalności</div>
+                <div class="flow-steps">Etapy: Test szczelności → Test ciśnienia → Test alarmu</div>
+            </div>
+
+            <div class="flow-item" data-flow="2">
+                <div class="flow-duration">~25 min</div>
+                <div class="flow-name">Scenariusz testowy 2</div>
+                <div class="flow-description">Rozszerzony test z diagnostyką elektroniki</div>
+                <div class="flow-steps">Etapy: Test szczelności → Diagnostyka → Test ciśnienia → Test komunikacji</div>
+            </div>
+
+            <div class="flow-item" data-flow="3">
+                <div class="flow-duration">~10 min</div>
+                <div class="flow-name">Scenariusz testowy 3</div>
+                <div class="flow-description">Szybki test po użyciu</div>
+                <div class="flow-steps">Etapy: Test podstawowy → Sprawdzenie szczelności</div>
+            </div>
+
+            <div class="flow-item" data-flow="4">
+                <div class="flow-duration">~35 min</div>
+                <div class="flow-name">Scenariusz testowy 4</div>
+                <div class="flow-description">Pełny test okresowy z kalibracją</div>
+                <div class="flow-steps">Etapy: Kalibracja → Test szczelności → Diagnostyka → Test wydajności → Raport</div>
+            </div>
+
+            <div class="flow-item" data-flow="5">
+                <div class="flow-duration">~20 min</div>
+                <div class="flow-name">Scenariusz testowy 5</div>
+                <div class="flow-description">Test certyfikacyjny zgodny z normą</div>
+                <div class="flow-steps">Etapy: Test normowy → Dokumentacja → Certyfikacja</div>
+            </div>
+        </div>
+
+        <div class="control-panel">
+            <button class="btn" onclick="goBack()">← Powrót</button>
+            <button class="btn primary" onclick="startTest()">Rozpocznij Test</button>
+        </div>
+
+        <div class="status" id="status">
+            Wybierz scenariusz testowy, aby kontynuować
+        </div>
+    </div>
+
+    <script>
+        let selectedFlow = null;
+
+        // Handle flow selection
+        document.querySelectorAll('.flow-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // Remove previous selection
+                document.querySelectorAll('.flow-item').forEach(i => i.classList.remove('selected'));
+                
+                // Select current item
+                this.classList.add('selected');
+                selectedFlow = this.dataset.flow;
+                
+                const flowName = this.querySelector('.flow-name').textContent;
+                document.getElementById('status').textContent = `Wybrany: ${flowName}`;
+                
+                console.log('Selected test flow:', selectedFlow, flowName);
+            });
+        });
+
+        function startTest() {
+            if (!selectedFlow) {
+                document.getElementById('status').textContent = 'Najpierw wybierz scenariusz testowy!';
+                return;
+            }
+            
+            const flowName = document.querySelector(`.flow-item[data-flow="${selectedFlow}"] .flow-name`).textContent;
+            document.getElementById('status').textContent = `Uruchamianie: ${flowName}...`;
+            
+            // Send message to parent window
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'test_flow_selected',
+                    flow: selectedFlow,
+                    name: flowName
+                }, '*');
+            }
+            
+            console.log('Starting test flow:', selectedFlow);
+        }
+
+        function goBack() {
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'navigate',
+                    page: 12  // Return to Test Menu
+                }, '*');
+            }
+        }
+
+        // Auto-select first flow for demonstration
+        setTimeout(() => {
+            document.querySelector('.flow-item[data-flow="1"]').click();
+        }, 500);
+    </script>
+</body>
+</html>

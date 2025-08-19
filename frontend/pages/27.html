@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Data</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 50%, #a78bfa 100%);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .data-sections {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .data-item:last-child {
+            border-bottom: none;
+        }
+
+        .data-label {
+            font-weight: 500;
+            opacity: 0.8;
+        }
+
+        .data-value {
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 15px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+
+        .status-active { background: #10b981; }
+        .status-inactive { background: #ef4444; }
+        .status-warning { background: #f59e0b; }
+
+        .control-panel {
+            margin-top: 30px;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn.primary {
+            background: rgba(59, 130, 246, 0.8);
+            border-color: rgba(59, 130, 246, 1);
+        }
+
+        .test-history {
+            grid-column: 1 / -1;
+            margin-top: 20px;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 8px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid;
+        }
+
+        .history-success { border-left-color: #10b981; }
+        .history-warning { border-left-color: #f59e0b; }
+        .history-error { border-left-color: #ef4444; }
+
+        .history-details {
+            flex: 1;
+        }
+
+        .history-date {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .history-result {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">👤 User Data</div>
+            <div class="subtitle">Informacje o użytkowniku i historia testów</div>
+        </div>
+
+        <div class="data-sections">
+            <div class="section">
+                <div class="section-title">
+                    📋 Informacje Użytkownika
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Użytkownik:</span>
+                    <span class="data-value" id="username">admin</span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Rola:</span>
+                    <span class="data-value" id="userRole">OPERATOR</span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Status:</span>
+                    <span class="data-value">Aktywny <span class="status-indicator status-active"></span></span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Ostatnie logowanie:</span>
+                    <span class="data-value" id="lastLogin">2024-08-19 22:40</span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Sesja:</span>
+                    <span class="data-value" id="sessionTime">00:02:15</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">
+                    📊 Statystyki Testów
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Wykonane testy:</span>
+                    <span class="data-value">47</span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Testy udane:</span>
+                    <span class="data-value">44</span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Testy z błędami:</span>
+                    <span class="data-value">3</span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Wskaźnik sukcesu:</span>
+                    <span class="data-value">93.6%</span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Ostatni test:</span>
+                    <span class="data-value">2024-08-19</span>
+                </div>
+            </div>
+
+            <div class="section test-history">
+                <div class="section-title">
+                    📈 Historia Testów (ostatnie 5)
+                </div>
+                
+                <div class="history-item history-success">
+                    <div class="history-details">
+                        <div><strong>Test szczelności PSS-5000</strong></div>
+                        <div class="history-date">2024-08-19 14:30 - Scenariusz 1</div>
+                    </div>
+                    <div class="history-result">PASSED</div>
+                </div>
+
+                <div class="history-item history-success">
+                    <div class="history-details">
+                        <div><strong>Test diagnostyczny Ultra Elite</strong></div>
+                        <div class="history-date">2024-08-19 10:15 - Scenariusz 2</div>
+                    </div>
+                    <div class="history-result">PASSED</div>
+                </div>
+
+                <div class="history-item history-warning">
+                    <div class="history-details">
+                        <div><strong>Test kalibracji G1</strong></div>
+                        <div class="history-date">2024-08-18 16:45 - Scenariusz 4</div>
+                    </div>
+                    <div class="history-result">WARNING</div>
+                </div>
+
+                <div class="history-item history-success">
+                    <div class="history-details">
+                        <div><strong>Test okresowy PSS-7000</strong></div>
+                        <div class="history-date">2024-08-18 11:20 - Scenariusz 3</div>
+                    </div>
+                    <div class="history-result">PASSED</div>
+                </div>
+
+                <div class="history-item history-error">
+                    <div class="history-details">
+                        <div><strong>Test szczelności Maska PP</strong></div>
+                        <div class="history-date">2024-08-17 09:30 - Scenariusz 1</div>
+                    </div>
+                    <div class="history-result">FAILED</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-panel">
+            <button class="btn" onclick="goBack()">← Powrót do Menu</button>
+            <button class="btn" onclick="exportData()">📄 Eksport Danych</button>
+            <button class="btn primary" onclick="refreshData()">🔄 Odśwież</button>
+        </div>
+    </div>
+
+    <script>
+        let sessionStart = new Date();
+
+        function updateSessionTime() {
+            const now = new Date();
+            const diff = Math.floor((now - sessionStart) / 1000);
+            const hours = Math.floor(diff / 3600).toString().padStart(2, '0');
+            const minutes = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
+            const seconds = (diff % 60).toString().padStart(2, '0');
+            document.getElementById('sessionTime').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+
+        function loadUserData() {
+            // Update current time as last login
+            const now = new Date();
+            const timeStr = now.toLocaleString('pl-PL', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            document.getElementById('lastLogin').textContent = timeStr;
+        }
+
+        function goBack() {
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'navigate',
+                    page: 12  // Return to Test Menu or User Menu
+                }, '*');
+            }
+        }
+
+        function exportData() {
+            alert('Eksport danych użytkownika został zainicjowany.\nRaport zostanie zapisany w formacie PDF.');
+            console.log('Exporting user data...');
+        }
+
+        function refreshData() {
+            loadUserData();
+            updateSessionTime();
+            console.log('User data refreshed');
+        }
+
+        // Initialize
+        loadUserData();
+        setInterval(updateSessionTime, 1000);
+
+        // Listen for user info from parent window
+        window.addEventListener('message', function(e) {
+            if (e.data.type === 'user_info') {
+                document.getElementById('username').textContent = e.data.username || 'admin';
+                document.getElementById('userRole').textContent = e.data.role || 'OPERATOR';
+            }
+        });
+
+        // Request user info from parent
+        if (window.parent !== window) {
+            window.parent.postMessage({
+                type: 'request_user_info'
+            }, '*');
+        }
+    </script>
+</body>
+</html>

@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Logowanie - Ręczne</title>
+    <title>Logowanie ręczne</title>
     <style>
         body {
             margin: 0;
@@ -24,7 +24,7 @@
         }
 
         .title {
-            font-size: 48px;
+            font-size: 42px;
             font-weight: bold;
             margin-bottom: 10px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
@@ -43,170 +43,266 @@
             backdrop-filter: blur(10px);
         }
 
-        .form-group {
-            margin-bottom: 25px;
+        .input-group {
+            margin-bottom: 20px;
             text-align: left;
         }
 
-        .form-label {
+        .input-label {
             display: block;
-            font-size: 14px;
             margin-bottom: 8px;
-            opacity: 0.9;
+            font-size: 14px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            opacity: 0.9;
         }
 
-        .form-input {
+        .input-field {
             width: 100%;
-            padding: 15px;
+            padding: 12px 16px;
             border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 10px;
+            border-radius: 8px;
             background: rgba(255,255,255,0.1);
             color: white;
             font-size: 16px;
             box-sizing: border-box;
         }
 
-        .form-input::placeholder {
-            color: rgba(255,255,255,0.6);
+        .input-field::placeholder {
+            color: rgba(255,255,255,0.5);
         }
 
-        .form-input:focus {
+        .input-field:focus {
             outline: none;
             border-color: rgba(255,255,255,0.6);
             background: rgba(255,255,255,0.2);
         }
 
-        .login-button {
+        .keyboard {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            margin: 5px 0;
+            gap: 5px;
+        }
+
+        .key {
+            padding: 10px 12px;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            min-width: 30px;
+            transition: all 0.2s;
+        }
+
+        .key:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .key:active {
+            transform: translateY(0);
+        }
+
+        .key.space {
+            width: 180px;
+        }
+
+        .key.special {
+            background: rgba(59, 130, 246, 0.3);
+        }
+
+        .login-btn {
             width: 100%;
             padding: 15px;
             background: rgba(16, 185, 129, 0.8);
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             color: white;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
+            margin-top: 20px;
             transition: all 0.3s;
-            margin-top: 10px;
         }
 
-        .login-button:hover {
+        .login-btn:hover {
             background: rgba(16, 185, 129, 1);
             transform: translateY(-2px);
         }
 
-        .login-button:disabled {
-            background: rgba(255,255,255,0.3);
-            cursor: not-allowed;
-            transform: none;
+        .login-btn:active {
+            transform: translateY(0);
         }
 
-        .back-button {
-            margin-top: 20px;
-            padding: 12px 30px;
-            background: rgba(255,255,255,0.1);
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 10px;
-            color: white;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .back-button:hover {
-            background: rgba(255,255,255,0.2);
-            border-color: rgba(255,255,255,0.5);
-        }
-
-        .error-message {
+        .error-msg {
             color: #ef4444;
-            font-size: 14px;
             margin-top: 10px;
+            font-size: 14px;
             display: none;
+        }
+
+        .error-msg.show {
+            display: block;
         }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="title">🔐 LOGOWANIE</div>
-    <div class="subtitle">Wprowadź dane do logowania</div>
-    
+    <div class="subtitle">User Login By Keyword</div>
+
     <div class="login-form">
-        <form id="loginForm">
-            <div class="form-group">
-                <label class="form-label" for="username">Nazwa użytkownika</label>
-                <input type="text" id="username" class="form-input" placeholder="Wprowadź nazwę użytkownika" required>
+        <div class="input-group">
+            <label class="input-label">name:</label>
+            <input type="text" class="input-field" id="username" placeholder="Wpisz nazwę użytkownika" value="admin">
+        </div>
+
+        <div class="input-group">
+            <label class="input-label">password:</label>
+            <input type="password" class="input-field" id="password" placeholder="Wpisz hasło" value="admin">
+        </div>
+
+        <div class="keyboard">
+            <div class="keyboard-row">
+                <div class="key" onclick="addChar('1')">1</div>
+                <div class="key" onclick="addChar('2')">2</div>
+                <div class="key" onclick="addChar('3')">3</div>
+                <div class="key" onclick="addChar('4')">4</div>
+                <div class="key" onclick="addChar('5')">5</div>
+                <div class="key" onclick="addChar('6')">6</div>
+                <div class="key" onclick="addChar('7')">7</div>
+                <div class="key" onclick="addChar('8')">8</div>
+                <div class="key" onclick="addChar('9')">9</div>
+                <div class="key" onclick="addChar('0')">0</div>
             </div>
-            
-            <div class="form-group">
-                <label class="form-label" for="password">Hasło</label>
-                <input type="password" id="password" class="form-input" placeholder="Wprowadź hasło" required>
+            <div class="keyboard-row">
+                <div class="key" onclick="addChar('Q')">Q</div>
+                <div class="key" onclick="addChar('W')">W</div>
+                <div class="key" onclick="addChar('E')">E</div>
+                <div class="key" onclick="addChar('R')">R</div>
+                <div class="key" onclick="addChar('T')">T</div>
+                <div class="key" onclick="addChar('Y')">Y</div>
             </div>
-            
-            <button type="submit" class="login-button" id="loginBtn">
-                ZALOGUJ SIĘ
-            </button>
-            
-            <div class="error-message" id="errorMessage">
-                Nieprawidłowe dane logowania
+            <div class="keyboard-row">
+                <div class="key" onclick="addChar('A')">A</div>
+                <div class="key" onclick="addChar('S')">S</div>
+                <div class="key" onclick="addChar('D')">D</div>
+                <div class="key" onclick="addChar('F')">F</div>
+                <div class="key" onclick="addChar('G')">G</div>
+                <div class="key" onclick="addChar('H')">H</div>
+                <div class="key" onclick="addChar('J')">J</div>
+                <div class="key" onclick="addChar('K')">K</div>
+                <div class="key" onclick="addChar('L')">L</div>
             </div>
-        </form>
-        
-        <button class="back-button" onclick="goBack()">
-            ← Powrót do skanera
-        </button>
+            <div class="keyboard-row">
+                <div class="key" onclick="addChar('Z')">Z</div>
+                <div class="key" onclick="addChar('X')">X</div>
+                <div class="key" onclick="addChar('C')">C</div>
+                <div class="key" onclick="addChar('V')">V</div>
+                <div class="key" onclick="addChar('B')">B</div>
+                <div class="key" onclick="addChar('N')">N</div>
+                <div class="key" onclick="addChar('M')">M</div>
+                <div class="key special" onclick="clearInput()">⌫</div>
+            </div>
+        </div>
+
+        <button class="login-btn" onclick="doLogin()">Zaloguj</button>
+        <div class="error-msg" id="errorMsg">Nieprawidłowe dane logowania</div>
     </div>
 </div>
 
 <script>
-const loginForm = document.getElementById('loginForm');
-const loginBtn = document.getElementById('loginBtn');
-const errorMessage = document.getElementById('errorMessage');
+    let currentField = null;
 
-loginForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    
-    // Disable button and show loading
-    loginBtn.disabled = true;
-    loginBtn.textContent = 'LOGOWANIE...';
-    errorMessage.style.display = 'none';
-    
-    // Simulate login API call
-    setTimeout(() => {
-        // Simple validation (in real app this would be API call)
-        if (username === 'admin' && password === 'admin') {
-            loginBtn.textContent = 'SUKCES!';
-            loginBtn.style.background = 'rgba(16, 185, 129, 1)';
-            
-            // Notify parent window
-            setTimeout(() => {
-                window.parent.postMessage({
-                    type: 'login', 
-                    success: true, 
-                    method: 'manual',
-                    username: username
-                }, '*');
-            }, 1000);
-        } else {
-            // Show error
-            errorMessage.style.display = 'block';
-            loginBtn.disabled = false;
-            loginBtn.textContent = 'ZALOGUJ SIĘ';
+    // Focus handlers
+    document.getElementById('username').addEventListener('focus', function() {
+        currentField = this;
+    });
+
+    document.getElementById('password').addEventListener('focus', function() {
+        currentField = this;
+    });
+
+    // Set initial focus
+    currentField = document.getElementById('username');
+    currentField.focus();
+
+    function addChar(char) {
+        if (currentField) {
+            currentField.value += char.toLowerCase();
+            currentField.focus();
         }
-    }, 1500);
-});
+    }
 
-function goBack() {
-    window.parent.postMessage({type: 'navigate', page: 3}, '*');
-}
+    function clearInput() {
+        if (currentField && currentField.value.length > 0) {
+            currentField.value = currentField.value.slice(0, -1);
+            currentField.focus();
+        }
+    }
 
-// Focus first input on load
-document.getElementById('username').focus();
+    function doLogin() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const errorMsg = document.getElementById('errorMsg');
+
+        console.log('🔐 LOGIN ATTEMPT:', { username, password, timestamp: new Date().toLocaleTimeString() });
+
+        // Simple validation - accept admin/admin or operator/operator
+        if ((username === 'admin' && password === 'admin') ||
+            (username === 'operator' && password === 'operator') ||
+            (username === 'r.arendt' && password === 'test')) {
+
+            console.log('✅ LOGIN SUCCESS - Sending message to parent:', {
+                type: 'login',
+                success: true,
+                username: username,
+                role: 'OPERATOR'
+            });
+
+            // Send success message to parent
+            window.parent.postMessage({
+                type: 'login',
+                success: true,
+                username: username,
+                role: 'OPERATOR'
+            }, '*');
+
+            // Clear error
+            errorMsg.classList.remove('show');
+            console.log('📨 Login message sent to parent window');
+        } else {
+            console.log('❌ LOGIN FAILED - Invalid credentials:', { username, password });
+            
+            // Show error
+            errorMsg.classList.add('show');
+
+            // Clear fields after 2 seconds
+            setTimeout(() => {
+                document.getElementById('username').value = 'admin';
+                document.getElementById('password').value = 'admin';
+                currentField = document.getElementById('username');
+                currentField.focus();
+                errorMsg.classList.remove('show');
+            }, 2000);
+        }
+    }
+
+    // Allow Enter key to submit
+    document.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            doLogin();
+        }
+    });
 </script>
 </body>
 </html>

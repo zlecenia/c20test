@@ -45,18 +45,22 @@ def read_hardware_values():
             with serial.Serial(port, baudrate=baud, timeout=0.5) as ser:
                 ser.write(b"READ\n")
                 line = ser.readline().decode("utf-8").strip()
-                # Expected CSV: low,mid,high
                 low, mid, high = [float(x) for x in line.split(",")]
                 return low, mid, high
-        except Exception as e:
+        except Exception:
             pass
 
-    # Mock data with realistic values
+    # Mock data - use static values from menu config
+    menu_data = read_menu()
+    sensors = menu_data.get("pressure_sensors", {})
+
+    # Add small variations to make it realistic
     t = time.time()
-    low = 80.5 + 20*math.sin(t/3.0) + random.uniform(-1,1)
-    mid = 115.4 + 30*math.sin(t/5.0) + random.uniform(-2,2)
-    high = 150.2 + 50*math.sin(t/7.0) + random.uniform(-3,3)
-    return round(low,1), round(mid,1), round(high,1)
+    low = sensors.get("low", {}).get("default_value", 10) + random.uniform(-0.5, 0.5)
+    mid = sensors.get("medium", {}).get("default_value", 20) + random.uniform(-0.5, 0.5)
+    high = sensors.get("high", {}).get("default_value", 30) + random.uniform(-0.5, 0.5)
+
+    return round(low, 1), round(mid, 1), round(high, 1)
 
 @app.get("/api/menu")
 def api_menu():
@@ -74,9 +78,9 @@ def api_sensors():
 
     return jsonify({
         "labels": {
-            "low": sensors.get("low", {}).get("label", "Niskie"),
-            "mid": sensors.get("medium", {}).get("label", "Średnie"),
-            "high": sensors.get("high", {}).get("label", "Wysokie")
+            "low": sensors.get("low", {}).get("label", "Low"),
+            "mid": sensors.get("medium", {}).get("label", "Medium"),
+            "high": sensors.get("high", {}).get("label", "High")
         },
         "values": {
             "low": low,
@@ -108,9 +112,8 @@ def api_status():
 @app.post("/api/login")
 def api_login():
     data = request.json
-    # Simple login logic
     if data.get("username") == "admin" and data.get("password") == "admin":
-        return jsonify({"success": True, "role": "operator", "username": "admin@softreck.com"})
+        return jsonify({"success": True, "role": "operator", "username": "r.arendt"})
     return jsonify({"success": False, "message": "Invalid credentials"})
 
 @app.get("/pages/<path:filename>")
@@ -119,5 +122,4 @@ def serve_pages(filename):
     return send_from_directory(root, filename)
 
 if __name__ == "__main__":
-    port = int(os.getenv("BACKEND_PORT", "5000"))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=5000, debug=True)

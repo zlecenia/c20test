@@ -7,6 +7,8 @@ services:
       - backend
     environment:
       - FRONTEND_PORT=${FRONTEND_PORT:-80}
+    volumes:
+      - ./frontend/pages:/usr/share/nginx/html/pages
     networks:
       - c20-network
 

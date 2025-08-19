@@ -38,9 +38,6 @@ menu_structure:
     type: "authenticated"
     requires_login: true
     items:
-      - name: "... Logout"
-        key: "logout"
-        action: "logout_user"
       - name: "Test Menu"
         key: "test_menu"
         page: 12
@@ -57,6 +54,9 @@ menu_structure:
         key: "service_menu"
         page: 5
         requires_admin: true
+      - name: "... Logout"
+        key: "logout"
+        action: "logout_user"
 
   - id: "test_menu"
     name: "TEST MENU"
