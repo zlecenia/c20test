@@ -7,7 +7,7 @@
   <style>
     body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; background:#f7f7f7; }
     header{ padding:12px 16px; background:white; border-bottom:1px solid #e5e5e5; display:flex; justify-content:space-between; align-items:center;}
-    .grid{ display:grid; grid-template-columns: 320px 1fr 360px; gap:12px; padding:12px;}
+    .grid{ display:grid; grid-template-columns: 320px 1fr 360px; gap:12px; padding:12px; align-items:start;}
     .card{ background:white; border:1px solid #e5e5e5; border-radius:16px; overflow:hidden; box-shadow:0 1px 2px rgba(0,0,0,.04); }
     .card header{ background:#fcfcfc; border-bottom:1px solid #eee; font-weight:600; }
     .section{ padding:8px 12px; border-bottom:1px solid #f1f1f1;}
@@ -20,6 +20,9 @@
     .kv{ display:flex; justify-content:space-between; padding:6px 12px; border-bottom:1px dashed #eee; font-size:14px;}
     .big{ font-size:28px; font-weight:700; }
     .muted{ color:#6b7280; font-size:12px; }
+    #menuCard{ max-height: calc(100vh - 100px); overflow:auto; }
+    .option .label{ display:inline-block; }
+    .option .hint{ display:block; font-size:12px; color:#6b7280; margin-top:2px; }
   </style>
 </head>
 <body>
@@ -33,6 +36,7 @@
       <header class="section">MENU</header>
       <div id="menuRoot"></div>
       <div class="meta" id="deviceMeta"></div>
+      <div class="meta" id="selectionSummary"></div>
     </div>
 
     <!-- CENTER: INTERACTION (iframe) -->
@@ -66,26 +70,53 @@ async function loadMenu(){
 }
 function renderMenu(data){
   const root = document.getElementById('menuRoot');
+  const iframe = document.getElementById('viewer');
+  const summaryEl = document.getElementById('selectionSummary');
   root.innerHTML = '';
+  const selections = {};
+  const updateSummary = () => {
+    const lines = Object.entries(selections).map(([k,v]) => `${k}: ${v}`);
+    summaryEl.textContent = lines.length ? ('Wybrane → ' + lines.join(' | ')) : '';
+  };
   (data.menu || []).forEach((section, si) => {
     const wrap = document.createElement('div');
     wrap.className = 'section';
     const h = document.createElement('h4'); h.textContent = section.name; wrap.appendChild(h);
-    section.options.forEach((opt, oi) => {
-      const div = document.createElement('div'); div.className = 'option'; div.textContent = opt;
+    const options = (section.options || []);
+    options.forEach((opt, oi) => {
+      const optObj = (typeof opt === 'string') ? { label: opt } : (opt || {});
+      const div = document.createElement('div');
+      div.className = 'option';
+      div.innerHTML = '<span class="label"></span>' + (optObj.hint ? '<span class="hint">'+optObj.hint+'</span>' : '');
+      div.querySelector('.label').textContent = optObj.label || optObj.text || String(opt);
       div.onclick = () => {
-        // mark active
-        root.querySelectorAll('.option').forEach(n=>n.classList.remove('active'));
+        // mark active only within this section
+        wrap.querySelectorAll('.option').forEach(n=>n.classList.remove('active'));
         div.classList.add('active');
-        // load corresponding page
-        const pageIndex = Math.min(si+1, 5); // map rough sections to first 5 pages
-        document.getElementById('viewer').src = './pages/' + pageIndex + '.html';
-        document.getElementById('helpBox').textContent = section.name + ' → ' + opt;
+        // resolve page mapping: option.page > section.page > fallback
+        const page = optObj.page || section.page;
+        if(page){
+          iframe.src = './pages/' + page + '.html';
+        }else{
+          const pageIndex = Math.min(si+1, 5); // backward-compat fallback
+          iframe.src = './pages/' + pageIndex + '.html';
+        }
+        document.getElementById('helpBox').textContent = section.name + ' → ' + (optObj.label || optObj.text || opt);
+        const key = section.key || section.name || `sekcja_${si+1}`;
+        selections[key] = (optObj.label || optObj.text || String(opt));
+        updateSummary();
       };
       wrap.appendChild(div);
     });
     root.appendChild(wrap);
   });
+
+  // Default selection: first option of first section
+  try{
+    const firstSection = root.querySelector('.section');
+    const firstOpt = firstSection?.querySelector('.option');
+    if(firstOpt){ firstOpt.click(); }
+  }catch(e){}
 }
 async function tick(){
   try{

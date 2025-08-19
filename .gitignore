@@ -1,3 +1,7 @@
+.idea
+.vscode
+
+# Output of 'npm pack'
 # Logs
 logs
 *.log
