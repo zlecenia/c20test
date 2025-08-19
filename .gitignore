@@ -1,6 +1,6 @@
 .idea
 .vscode
-
+package-lock.json
 # Output of 'npm pack'
 # Logs
 logs
