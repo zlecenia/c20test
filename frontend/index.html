@@ -4,127 +4,327 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Panel testowania - SCBA</title>
-    <style>
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <!--
         * { margin:0; padding:0; box-sizing:border-box; }
+        
+        /* Root CSS Variables for different display modes */
+        :root {
+            --header-height: 40px;
+            --menu-width: 100%;
+            --content-gap: 8px;
+            --card-padding: 8px;
+            --font-size-base: 14px;
+            --font-size-header: 16px;
+            --touch-target: 44px;
+        }
+        
+        /* Waveshare 7.9" LCD 400x1280 - Special Mode */
+        @media screen and (max-width: 420px) and (min-height: 1200px) {
+            :root {
+                --header-height: 35px;
+                --content-gap: 4px;
+                --card-padding: 6px;
+                --font-size-base: 12px;
+                --font-size-header: 14px;
+                --touch-target: 40px;
+            }
+        }
+        
+        /* Mobile Mode */
+        @media screen and (max-width: 768px) {
+            :root {
+                --header-height: 45px;
+                --content-gap: 6px;
+                --card-padding: 10px;
+                --font-size-base: 16px;
+                --font-size-header: 18px;
+                --touch-target: 48px;
+            }
+        }
+        
         body {
             font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
-            background:#f7f7f7;
-            overflow:hidden;
-            height:100vh;
+            background: #1a1a1a;
+            overflow: hidden;
+            height: 100vh;
+            font-size: var(--font-size-base);
+            line-height: 1.4;
         }
-        .app-header{
-            padding:12px 16px;
-            background:white;
-            border-bottom:1px solid #e5e5e5;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            height:50px;
+        
+        .app-header {
+            padding: 6px var(--card-padding);
+            background: linear-gradient(135deg, #2c3547 0%, #1e2836 100%);
+            border-bottom: 2px solid #0ea5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: var(--header-height);
+            color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
-        .grid{
-            display:grid;
-            grid-template-columns: 240px 1fr 320px;
-            gap:0;
-            height:calc(100vh - 90px);
+        
+        /* Vertical layout for narrow displays */
+        .grid {
+            display: flex;
+            flex-direction: column;
+            gap: var(--content-gap);
+            height: calc(100vh - var(--header-height) - 30px);
+            padding: var(--content-gap);
         }
-        .card{
-            background:white;
-            border:1px solid #e5e5e5;
-            overflow:hidden;
-            display:flex;
-            flex-direction:column;
+        
+        /* For desktop/wide displays - horizontal layout */
+        @media screen and (min-width: 1024px) {
+            .grid {
+                display: grid;
+                grid-template-columns: 240px 1fr 280px;
+                flex-direction: unset;
+            }
         }
-        .card-header{
-            background:#2c3547;
-            color:white;
-            padding:10px 12px;
+        
+        .card {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+            color: #f1f5f9;
+            padding: var(--card-padding);
+            font-size: var(--font-size-header);
+            font-weight: 600;
+            border-bottom: 1px solid #0ea5e9;
             font-weight:600;
             text-transform:uppercase;
             font-size:13px;
             text-align:center;
         }
-        .menu-section{
-            padding:8px;
-            overflow-y:auto;
-            flex:1;
+        
+        .menu-section {
+            padding: var(--card-padding);
+            overflow-y: auto;
+            flex: 1;
+            background: #2a2a2a;
         }
-        .menu-title{
-            font-size:11px;
-            text-transform:uppercase;
-            color:#6b7280;
-            padding:8px 4px 4px;
-            font-weight:600;
+        
+        .menu-title {
+            font-size: calc(var(--font-size-base) - 2px);
+            text-transform: uppercase;
+            color: #94a3b8;
+            padding: var(--card-padding) 4px 4px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
-        .option{
-            padding:8px 10px;
-            margin:2px 0;
-            border:1px solid #e5e5e5;
-            border-radius:6px;
-            cursor:pointer;
-            font-size:13px;
-            transition:all 0.2s;
+        
+        .option {
+            padding: var(--card-padding) 12px;
+            margin: 4px 0;
+            border: 2px solid #374151;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: var(--font-size-base);
+            transition: all 0.3s ease;
+            background: #374151;
+            color: #f1f5f9;
+            min-height: var(--touch-target);
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
         }
-        .option:hover{
-            background:#f0f4f8;
-            border-color:#cbd5e0;
+        
+        .option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.6s;
         }
-        .option.active{
-            background:#eef2ff;
-            border-color:#6366f1;
-            font-weight:500;
+        
+        .option:hover::before {
+            left: 100%;
         }
-        .option.disabled{
-            opacity:0.5;
-            cursor:not-allowed;
+        
+        .option:hover {
+            background: #4b5563;
+            border-color: #0ea5e9;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
         }
-        .back-arrow{
-            color:#6b7280;
-            margin-right:4px;
+        
+        .option.active {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            border-color: #0ea5e9;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 16px rgba(14, 165, 233, 0.4);
         }
-        #viewer{
-            width:100%;
-            height:100%;
-            border:0;
-            background:white;
+        
+        .option.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: #1f2937;
+            border-color: #374151;
         }
-        .interaction-content{
-            flex:1;
-            overflow:hidden;
+        
+        .option.disabled:hover {
+            transform: none;
+            box-shadow: none;
         }
-        .pressure-group{
-            padding:12px;
+        
+        .back-arrow {
+            color: #94a3b8;
+            margin-right: 8px;
+            font-size: 16px;
         }
-        .pressure-label{
-            font-size:11px;
-            color:#6b7280;
-            text-transform:uppercase;
-            margin-bottom:8px;
-            font-weight:600;
+        
+        #viewer {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            background: #1a1a1a;
+            border-radius: 8px;
+            overflow: hidden;
         }
-        .pressure-row{
-            display:flex;
-            justify-content:space-between;
-            padding:8px 0;
-            border-bottom:1px solid #f1f1f1;
-            align-items:center;
+        
+        /* Pressure sensors styling */
+        .pressure-group {
+            padding: var(--card-padding);
+            background: #2a2a2a;
         }
-        .pressure-value{
-            font-size:28px;
-            font-weight:700;
+        
+        .pressure-label {
+            font-size: calc(var(--font-size-base) - 1px);
+            color: #94a3b8;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: var(--card-padding);
+            letter-spacing: 0.5px;
         }
-        .device-info{
-            padding:12px;
-            font-size:12px;
-            color:#6b7280;
-            border-top:1px solid #e5e5e5;
+        
+        .pressure-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            border-bottom: 1px solid #374151;
+            color: #f1f5f9;
         }
-        .info-row{
-            display:flex;
-            justify-content:space-between;
-            padding:4px 0;
+        
+        .pressure-row:last-child {
+            border-bottom: none;
         }
-        .status-dot{
-            display:inline-block;
+        
+        .pressure-value {
+            font-weight: 700;
+            font-size: var(--font-size-header);
+            color: #0ea5e9;
+            min-width: 50px;
+            text-align: right;
+        }
+        
+        .device-info {
+            padding: var(--card-padding);
+            background: #2a2a2a;
+            color: #f1f5f9;
+            font-size: calc(var(--font-size-base) - 1px);
+        }
+        
+        .device-info div {
+            margin-bottom: 4px;
+        }
+        
+        /* Display mode selector */
+        .display-mode-selector {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            display: flex;
+            gap: 4px;
+            background: rgba(0,0,0,0.8);
+            padding: 4px;
+            border-radius: 6px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .mode-btn {
+            padding: 4px 8px;
+            background: #374151;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .mode-btn.active {
+            background: #0ea5e9;
+        }
+        
+        .mode-btn:hover {
+            background: #4b5563;
+        }
+        
+        /* Responsive adjustments for Waveshare display */
+        @media screen and (max-width: 420px) and (min-height: 1200px) {
+            .grid {
+                gap: 2px;
+                padding: 2px;
+            }
+            
+            .option {
+                padding: 8px 10px;
+                margin: 2px 0;
+                font-size: 11px;
+                min-height: 36px;
+            }
+            
+            .pressure-row {
+                padding: 4px 0;
+                font-size: 11px;
+            }
+            
+            .pressure-value {
+                font-size: 13px;
+            }
+            
+            .app-header {
+                padding: 4px 6px;
+            }
+            
+            .card-header {
+                padding: 4px 6px;
+                font-size: 11px;
+            }
+        }
+        
+        .interaction-content {
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            color: #f1f5f9;
+        }
+        
+        .status-dot {
+            display: inline-block;
             width:8px;
             height:8px;
             border-radius:50%;
@@ -149,12 +349,23 @@
             background:#f8f9fa;
             border-top:1px solid #e5e5e5;
         }
-    </style>
+    -->
 </head>
 <body>
+<!-- Display Mode Selector -->
+<div class="display-mode-selector">
+    <button class="mode-btn active" onclick="setDisplayMode('auto')" data-mode="auto">AUTO</button>
+    <button class="mode-btn" onclick="setDisplayMode('mobile')" data-mode="mobile">MOBILE</button>
+    <button class="mode-btn" onclick="setDisplayMode('desktop')" data-mode="desktop">DESKTOP</button>
+    <button class="mode-btn" onclick="setDisplayMode('waveshare')" data-mode="waveshare">LCD</button>
+</div>
+
 <div class="app-header">
-    <div><strong>Poszerzona struktura programu - Menu testowania</strong></div>
-    <div id="dateTimeHeader" style="font-size:12px; color:#6b7280;">8/19/2025, 10:14:35 PM</div>
+    <div><strong>MASKTRONIC C20</strong> <span id="systemVersion">v2.1.0</span></div>
+    <div>
+        <span class="status-dot"></span><span id="statusText">Operacyjny</span> | 
+        <span id="userRole">r.arendt</span>
+    </div>
 </div>
 
 <div class="grid">
@@ -223,17 +434,131 @@
     </div>
 </div>
 
-<script>
+<script src="/assets/js/app.js"></script>
+<!--
     const API = window.location.origin + '/api';
     let currentMenu = 'system_menu';
     let currentUser = null;
     let menuData = null;
 
-    // Ensure iframe loads pages correctly
+    // Ensure iframe loads pages correctly with URL routing
     function loadPage(pageNumber) {
         const iframe = document.getElementById('viewer');
         iframe.src = '/pages/' + pageNumber + '.html';
+        
+        // Update URL hash for routing
+        const newHash = `#/page/${pageNumber}.html`;
+        if (window.location.hash !== newHash) {
+            window.location.hash = newHash;
+        }
+        
+        console.log('📄 PAGE LOADED:', pageNumber, 'URL:', newHash);
     }
+
+    // Handle hash changes for direct URL navigation
+    function handleHashChange() {
+        const hash = window.location.hash;
+        console.log('🔗 HASH CHANGED:', hash);
+        
+        if (hash.startsWith('#/page/')) {
+            const pageMatch = hash.match(/#\/page\/(\d+)\.html/);
+            if (pageMatch) {
+                const pageNumber = parseInt(pageMatch[1]);
+                console.log('🧭 NAVIGATING TO PAGE FROM URL:', pageNumber);
+                const iframe = document.getElementById('viewer');
+                iframe.src = '/pages/' + pageNumber + '.html';
+            }
+        }
+    }
+
+    // Listen for hash changes
+    window.addEventListener('hashchange', handleHashChange);
+
+    // Handle initial hash on page load
+    window.addEventListener('load', handleHashChange);
+
+    // Display mode management for different screen types
+    let currentDisplayMode = 'auto';
+    
+    function setDisplayMode(mode) {
+        currentDisplayMode = mode;
+        const body = document.body;
+        
+        // Remove existing mode classes
+        body.classList.remove('mode-auto', 'mode-mobile', 'mode-desktop', 'mode-waveshare');
+        
+        // Add new mode class
+        body.classList.add(`mode-${mode}`);
+        
+        // Update CSS variables based on mode
+        const root = document.documentElement;
+        
+        switch(mode) {
+            case 'waveshare':
+                // Optimized for Waveshare 7.9" LCD 400x1280
+                root.style.setProperty('--header-height', '30px');
+                root.style.setProperty('--content-gap', '2px');
+                root.style.setProperty('--card-padding', '4px');
+                root.style.setProperty('--font-size-base', '11px');
+                root.style.setProperty('--font-size-header', '12px');
+                root.style.setProperty('--touch-target', '36px');
+                break;
+            case 'mobile':
+                // Mobile optimized
+                root.style.setProperty('--header-height', '45px');
+                root.style.setProperty('--content-gap', '6px');
+                root.style.setProperty('--card-padding', '10px');
+                root.style.setProperty('--font-size-base', '16px');
+                root.style.setProperty('--font-size-header', '18px');
+                root.style.setProperty('--touch-target', '48px');
+                break;
+            case 'desktop':
+                // Desktop optimized
+                root.style.setProperty('--header-height', '50px');
+                root.style.setProperty('--content-gap', '12px');
+                root.style.setProperty('--card-padding', '12px');
+                root.style.setProperty('--font-size-base', '14px');
+                root.style.setProperty('--font-size-header', '16px');
+                root.style.setProperty('--touch-target', '44px');
+                break;
+            default: // 'auto'
+                // Auto-detect based on screen size
+                if (window.innerWidth <= 420 && window.innerHeight >= 1200) {
+                    setDisplayMode('waveshare');
+                    return;
+                } else if (window.innerWidth <= 768) {
+                    setDisplayMode('mobile');
+                    return;
+                } else {
+                    setDisplayMode('desktop');
+                    return;
+                }
+        }
+        
+        // Update active button
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.mode === mode) {
+                btn.classList.add('active');
+            }
+        });
+        
+        console.log('🎮 DISPLAY MODE CHANGED:', mode);
+        localStorage.setItem('displayMode', mode);
+    }
+    
+    // Auto-detect display mode on load
+    function detectDisplayMode() {
+        const savedMode = localStorage.getItem('displayMode');
+        if (savedMode && savedMode !== 'auto') {
+            setDisplayMode(savedMode);
+        } else {
+            setDisplayMode('auto');
+        }
+    }
+    
+    // Initialize display mode
+    setTimeout(detectDisplayMode, 100);
 
     async function loadConfig(){
         try {
@@ -527,6 +852,41 @@
             console.log('🧭 NAVIGATION REQUEST:', e.data.page);
             loadPage(e.data.page);
         }
+
+        // Handle device kind selection with automatic navigation
+        if(e.data.type === 'device_kind_selected'){
+            console.log('🛡️ DEVICE KIND SELECTED:', e.data.device);
+            if(e.data.navigate) {
+                console.log('🧭 AUTO-NAVIGATING TO PAGE:', e.data.navigate);
+                loadPage(e.data.navigate);
+            }
+        }
+
+        // Handle device type selection with automatic navigation
+        if(e.data.type === 'device_type_selected'){
+            console.log('⚙️ DEVICE TYPE SELECTED:', e.data.deviceType);
+            if(e.data.navigate) {
+                console.log('🧭 AUTO-NAVIGATING TO PAGE:', e.data.navigate);
+                loadPage(e.data.navigate);
+            }
+        }
+
+        // Handle test flow selection
+        if(e.data.type === 'test_flow_selected'){
+            console.log('🔄 TEST FLOW SELECTED:', e.data.flow);
+        }
+
+        // Handle user info requests
+        if(e.data.type === 'request_user_info'){
+            console.log('👤 USER INFO REQUESTED');
+            // Send current user info back to iframe
+            if(currentUser) {
+                e.source.postMessage({
+                    type: 'user_info_response',
+                    user: currentUser
+                }, '*');
+            }
+        }
     });
 
     async function boot(){
@@ -544,11 +904,193 @@
             setInterval(updateSensors, 1000);
             updateDateTime(); // Set once as static
         }catch(e){
-            console.error('Boot error:', e);
+    }
+}
+
+function handleAction(action){
+    console.log('⚡ HANDLE ACTION CALLED:', {
+        action,
+        currentUser: currentUser,
+        timestamp: new Date().toLocaleTimeString()
+    });
+
+    switch(action){
+        case 'logout_user':
+            console.log('🚪 LOGGING OUT USER');
+            currentUser = null;
+            document.getElementById('userRole').textContent = '- - -';
+            console.log('🔄 RENDERING LOGIN MENU AFTER LOGOUT');
+            renderMenu(menuData, 'login_menu');
+            loadPage(3); // Go to login page
+            break;
+
+        case 'system_calibration':
+            console.log('⚙️ STARTING SYSTEM CALIBRATION - 10s');
+            document.getElementById('status').textContent = 'System calibration in Progress ...';
+            setTimeout(() => {
+                console.log('✅ SYSTEM CALIBRATION COMPLETE');
+                document.getElementById('status').textContent = 'System Ready';
+                // Don't redirect if user is logged in - stay in current menu
+                if(!currentUser) {
+                    console.log('📋 NO USER LOGGED IN - RETURNING TO LOGIN MENU');
+                    renderMenu(menuData, 'login_menu');
+                } else {
+                    console.log('👤 USER LOGGED IN - STAYING IN CURRENT MENU');
+                }
+            }, 10000); // 10s as specified
+            break;
+
+        case 'run_diagnostic':
+            console.log('🔍 STARTING AUTODIAGNOSTIC - 6s');
+            document.getElementById('status').textContent = 'Autodiagnostyka...';
+            setTimeout(() => {
+                console.log('✅ AUTODIAGNOSTIC COMPLETE');
+                document.getElementById('status').textContent = 'System Ready';
+                // Don't redirect if user is logged in - stay in current menu
+                if(!currentUser) {
+                    console.log('📋 NO USER LOGGED IN - RETURNING TO LOGIN MENU');
+                    renderMenu(menuData, 'login_menu');
+                } else {
+                    console.log('👤 USER LOGGED IN - STAYING IN CURRENT MENU');
+                }
+            }, 6000); // 6s as specified
+            break;
+
+        default:
+            console.log('⚠️ UNKNOWN ACTION:', action);
+    }
+}
+
+async function updateSensors(){
+    try{
+        const res = await fetch(API + '/sensors');
+        const d = await res.json();
+
+        // Use static values as shown in images
+        document.getElementById('valLow').textContent = '10';
+        document.getElementById('valMid').textContent = '20';
+        document.getElementById('valHigh').textContent = '30';
+
+        document.getElementById('deviceInfo').textContent = `${d.device.name}`;
+        document.getElementById('endpoint').textContent = d.device.endpoint;
+        document.getElementById('status').textContent = d.status || 'System Ready';
+    }catch(e){
+        document.getElementById('status').textContent = 'Connection Error';
+    }
+}
+
+function updateDateTime(){
+    const now = new Date();
+    document.getElementById('dateTime').textContent =
+        '12.12.2025 - 12:05:01'; // Static as in images
+    document.getElementById('dateTimeHeader').textContent =
+        '8/19/2025, 10:14:35 PM'; // Static as in header
+}
+
+// Listen for messages from iframes
+window.addEventListener('message', (e) => {
+    console.log('📨 RECEIVED MESSAGE:', e.data);
+    console.log('📊 MESSAGE DETAILS:', {
+        type: e.data.type,
+        success: e.data.success,
+        username: e.data.username,
+        role: e.data.role,
+        timestamp: new Date().toLocaleTimeString(),
+        currentUser: currentUser
+    });
+
+    if(e.data.type === 'login' && e.data.success){
+        console.log('🚀 PROCESSING LOGIN SUCCESS...');
+        
+        currentUser = {
+            username: e.data.username || 'r.arendt',
+            role: e.data.role || 'OPERATOR'
+        };
+        
+        console.log('👤 USER SET:', currentUser);
+        document.getElementById('userRole').textContent = currentUser.username;
+        console.log('🏷️ USER ROLE UPDATED IN UI:', currentUser.username);
+
+        console.log('🎯 TRANSITIONING TO USER MENU...');
+        // Transition to user menu after successful login
+        renderMenu(menuData, 'user_menu');
+        console.log('✅ USER MENU RENDERED');
+
+        // Load first page of user menu (now first item is Test Menu, not Logout)
+        setTimeout(() => {
+            console.log('🔍 LOOKING FOR FIRST MENU ITEM...');
+            const firstItem = document.querySelector('.option:not(.disabled)');
+            console.log('📋 FIRST ITEM FOUND:', firstItem?.textContent);
+            if(firstItem) {
+                console.log('🖱️ CLICKING FIRST ITEM...');
+                firstItem.click();
+            } else {
+                console.log('⚠️ NO MENU ITEMS FOUND, SKIPPING AUTO-CLICK');
+            }
+        }, 100);
+    }
+
+    if(e.data.type === 'navigate'){
+        console.log('🧭 NAVIGATION REQUEST:', e.data.page);
+        loadPage(e.data.page);
+    }
+
+    // Handle device kind selection with automatic navigation
+    if(e.data.type === 'device_kind_selected'){
+        console.log('🛡️ DEVICE KIND SELECTED:', e.data.device);
+        if(e.data.navigate) {
+            console.log('🧭 AUTO-NAVIGATING TO PAGE:', e.data.navigate);
+            loadPage(e.data.navigate);
         }
     }
 
-    boot();
-</script>
+    // Handle device type selection with automatic navigation
+    if(e.data.type === 'device_type_selected'){
+        console.log('⚙️ DEVICE TYPE SELECTED:', e.data.deviceType);
+        if(e.data.navigate) {
+            console.log('🧭 AUTO-NAVIGATING TO PAGE:', e.data.navigate);
+            loadPage(e.data.navigate);
+        }
+    }
+
+    // Handle test flow selection
+    if(e.data.type === 'test_flow_selected'){
+        console.log('🔄 TEST FLOW SELECTED:', e.data.flow);
+    }
+
+    // Handle user info requests
+    if(e.data.type === 'request_user_info'){
+        console.log('👤 USER INFO REQUESTED');
+        // Send current user info back to iframe
+        if(currentUser) {
+            e.source.postMessage({
+                type: 'user_info_response',
+                user: currentUser
+            }, '*');
+        }
+    }
+});
+
+async function boot(){
+    // Start with blank iframe
+    document.getElementById('viewer').src = 'about:blank';
+
+    try{
+        const cfg = await loadConfig();
+        const menu = await loadMenu();
+
+        // Start with system menu
+        renderMenu(menu, 'system_menu');
+
+        updateSensors();
+        setInterval(updateSensors, 1000);
+        updateDateTime(); // Set once as static
+    }catch(e){
+        console.error('Boot error:', e);
+    }
+}
+
+boot();
+-->
 </body>
 </html>

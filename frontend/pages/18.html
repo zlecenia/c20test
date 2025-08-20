@@ -1,1 +1,509 @@
-<!doctype html><html><body><h1>Strona PDF 18</h1><p>Tu wstaw treść odpowiadającą stronie 18 z PDF (osobny plik HTML w iframe).</p></body></html>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Tests</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #0f766e 0%, #14b8a6 50%, #5eead4 100%);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .title {
+            font-size: 42px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .test-categories {
+            display: grid;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .category-card {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #14b8a6, #5eead4);
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .category-icon {
+            font-size: 28px;
+            margin-right: 15px;
+        }
+
+        .category-title {
+            font-size: 22px;
+            font-weight: bold;
+            flex: 1;
+        }
+
+        .category-status {
+            background: rgba(16, 185, 129, 0.8);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .category-status.outdated {
+            background: rgba(251, 146, 60, 0.8);
+        }
+
+        .test-flows {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .flow-item {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .flow-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .flow-item.selected {
+            background: rgba(20, 184, 166, 0.3);
+            border-color: #14b8a6;
+        }
+
+        .flow-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .flow-version {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .flow-description {
+            font-size: 11px;
+            opacity: 0.7;
+            line-height: 1.4;
+        }
+
+        .update-section {
+            margin: 30px 0;
+            padding: 25px;
+            background: rgba(59, 130, 246, 0.2);
+            border: 2px solid rgba(59, 130, 246, 0.5);
+            border-radius: 15px;
+        }
+
+        .update-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .update-icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+
+        .update-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .update-option {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .update-option:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #14b8a6;
+        }
+
+        .update-option.active {
+            background: rgba(20, 184, 166, 0.3);
+            border-color: #14b8a6;
+        }
+
+        .option-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .option-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .option-description {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .progress-section {
+            margin: 20px 0;
+            display: none;
+        }
+
+        .progress-section.show {
+            display: block;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #14b8a6, #5eead4);
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 14px;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .control-panel {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn.primary {
+            background: rgba(59, 130, 246, 0.8);
+            border-color: rgba(59, 130, 246, 1);
+        }
+
+        .btn.success {
+            background: rgba(16, 185, 129, 0.8);
+            border-color: rgba(16, 185, 129, 1);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 768px) {
+            .test-flows {
+                grid-template-columns: 1fr;
+            }
+            
+            .update-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">📊 Update Tests</div>
+        <div class="subtitle">Aktualizacja scenariuszy i procedur testowych</div>
+
+        <div class="test-categories">
+            <div class="category-card">
+                <div class="category-header">
+                    <div class="category-icon">🔧</div>
+                    <div class="category-title">Testy podstawowe</div>
+                    <div class="category-status">Aktualne</div>
+                </div>
+                <div class="test-flows">
+                    <div class="flow-item" onclick="selectFlow(this, 'basic-1')">
+                        <div class="flow-name">Po użyciu - Quick Check</div>
+                        <div class="flow-version">Wersja 1.2.3</div>
+                        <div class="flow-description">Szybki test funkcjonalny 5-8 min</div>
+                    </div>
+                    <div class="flow-item" onclick="selectFlow(this, 'basic-2')">
+                        <div class="flow-name">Podstawowy test szczelności</div>
+                        <div class="flow-version">Wersja 1.1.8</div>
+                        <div class="flow-description">Test ciśnieniowy podstawowy</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-card">
+                <div class="category-header">
+                    <div class="category-icon">📅</div>
+                    <div class="category-title">Testy okresowe</div>
+                    <div class="category-status">Aktualne</div>
+                </div>
+                <div class="test-flows">
+                    <div class="flow-item" onclick="selectFlow(this, 'periodic-1')">
+                        <div class="flow-name">Test kwartalny (1/3 roku)</div>
+                        <div class="flow-version">Wersja 2.0.1</div>
+                        <div class="flow-description">Rozszerzony test diagnostyczny</div>
+                    </div>
+                    <div class="flow-item" onclick="selectFlow(this, 'periodic-2')">
+                        <div class="flow-name">Test półroczny</div>
+                        <div class="flow-version">Wersja 1.9.4</div>
+                        <div class="flow-description">Pełna diagnostyka techniczna</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-card">
+                <div class="category-header">
+                    <div class="category-icon">🔬</div>
+                    <div class="category-title">Testy specjalne</div>
+                    <div class="category-status outdated">Wymaga aktualizacji</div>
+                </div>
+                <div class="test-flows">
+                    <div class="flow-item" onclick="selectFlow(this, 'special-1')">
+                        <div class="flow-name">Rewizja główna (6 lat)</div>
+                        <div class="flow-version">Wersja 1.5.2</div>
+                        <div class="flow-description">Kompletna inspekcja i wymiana</div>
+                    </div>
+                    <div class="flow-item" onclick="selectFlow(this, 'special-2')">
+                        <div class="flow-name">Test certyfikacyjny</div>
+                        <div class="flow-version">Wersja 1.4.1</div>
+                        <div class="flow-description">Test zgodności z normami</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="update-section">
+            <div class="update-title">
+                <div class="update-icon">⬇️</div>
+                Opcje aktualizacji
+            </div>
+            <div class="update-options">
+                <div class="update-option active" onclick="selectUpdateMode(this, 'auto')">
+                    <div class="option-icon">🔄</div>
+                    <div class="option-title">Automatyczna</div>
+                    <div class="option-description">Pobierz najnowsze wersje z serwera</div>
+                </div>
+                <div class="update-option" onclick="selectUpdateMode(this, 'manual')">
+                    <div class="option-icon">📁</div>
+                    <div class="option-title">Ręczna</div>
+                    <div class="option-description">Wgraj pliki z dysku lokalnego</div>
+                </div>
+                <div class="update-option" onclick="selectUpdateMode(this, 'backup')">
+                    <div class="option-icon">💾</div>
+                    <div class="option-title">Kopia zapasowa</div>
+                    <div class="option-description">Utwórz kopię aktualnych testów</div>
+                </div>
+            </div>
+
+            <div class="progress-section" id="progressSection">
+                <div class="progress-text" id="progressText">Aktualizowanie testów...</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-panel">
+            <button class="btn" onclick="goBack()">← Powrót do Service Menu</button>
+            <button class="btn primary" onclick="checkUpdates()">🔍 Sprawdź aktualizacje</button>
+            <button class="btn success" onclick="startUpdate()" id="updateBtn">⬇️ Rozpocznij aktualizację</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedFlows = [];
+        let updateMode = 'auto';
+
+        function selectFlow(element, flowId) {
+            element.classList.toggle('selected');
+            
+            if (selectedFlows.includes(flowId)) {
+                selectedFlows = selectedFlows.filter(id => id !== flowId);
+            } else {
+                selectedFlows.push(flowId);
+            }
+            
+            console.log('Selected flows:', selectedFlows);
+        }
+
+        function selectUpdateMode(element, mode) {
+            document.querySelectorAll('.update-option').forEach(opt => opt.classList.remove('active'));
+            element.classList.add('active');
+            updateMode = mode;
+            console.log('Update mode:', mode);
+        }
+
+        function checkUpdates() {
+            const btn = event.target;
+            const originalText = btn.textContent;
+            
+            btn.textContent = '🔄 Sprawdzanie...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.disabled = false;
+                
+                alert('Sprawdzono dostępne aktualizacje:\n\n✅ Testy podstawowe - aktualne\n✅ Testy okresowe - aktualne\n⚠️ Testy specjalne - dostępna aktualizacja v1.6.0\n\nWybierz testy do aktualizacji i kliknij "Rozpocznij aktualizację".');
+                console.log('Update check completed');
+            }, 2000);
+        }
+
+        function startUpdate() {
+            if (selectedFlows.length === 0) {
+                alert('Wybierz co najmniej jeden test do aktualizacji!');
+                return;
+            }
+            
+            if (confirm(`Rozpocząć aktualizację wybranych testów?\n\nTryb: ${updateMode === 'auto' ? 'Automatyczny' : updateMode === 'manual' ? 'Ręczny' : 'Kopia zapasowa'}\nWybrane testy: ${selectedFlows.length}\n\n⚠️ Podczas aktualizacji system może być niedostępny.`)) {
+                
+                document.getElementById('updateBtn').disabled = true;
+                document.getElementById('progressSection').classList.add('show');
+                
+                simulateUpdate();
+            }
+        }
+
+        function simulateUpdate() {
+            let progress = 0;
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            
+            const steps = [
+                'Tworzenie kopii zapasowej...',
+                'Pobieranie nowych wersji testów...',
+                'Weryfikacja integralności plików...',
+                'Instalowanie aktualizacji...',
+                'Weryfikacja poprawności testów...',
+                'Aktualizacja zakończona pomyślnie!'
+            ];
+            
+            let currentStep = 0;
+            
+            const updateInterval = setInterval(() => {
+                progress += Math.random() * 15 + 5;
+                
+                if (progress >= 100) {
+                    progress = 100;
+                    progressText.textContent = steps[5];
+                    clearInterval(updateInterval);
+                    
+                    setTimeout(() => {
+                        alert('Aktualizacja testów została zakończona pomyślnie!\n\nZaktualizowane komponenty:\n• Scenariusze testowe\n• Procedury diagnostyczne\n• Parametry kalibracji\n\nSystem gotowy do pracy.');
+                        document.getElementById('progressSection').classList.remove('show');
+                        document.getElementById('updateBtn').disabled = false;
+                        
+                        // Clear selections
+                        document.querySelectorAll('.flow-item.selected').forEach(item => item.classList.remove('selected'));
+                        selectedFlows = [];
+                        
+                        console.log('Test update completed successfully');
+                    }, 1000);
+                } else {
+                    const stepIndex = Math.floor((progress / 100) * (steps.length - 1));
+                    if (stepIndex !== currentStep && stepIndex < steps.length - 1) {
+                        currentStep = stepIndex;
+                        progressText.textContent = steps[stepIndex];
+                    }
+                }
+                
+                progressFill.style.width = `${progress}%`;
+            }, 500);
+        }
+
+        function goBack() {
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'navigate',
+                    page: 5  // Return to Service Menu
+                }, '*');
+            }
+        }
+
+        // Initialize page
+        console.log('Update Tests page loaded successfully');
+    </script>
+</body>
+</html>

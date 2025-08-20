@@ -1,0 +1,380 @@
+* { margin:0; padding:0; box-sizing:border-box; }
+
+/* Root CSS Variables for different display modes */
+:root {
+    --header-height: 40px;
+    --menu-width: 100%;
+    --content-gap: 8px;
+    --card-padding: 8px;
+    --font-size-base: 14px;
+    --font-size-header: 16px;
+    --touch-target: 44px;
+}
+
+/* Waveshare 7.9" LCD 400x1280 - Special Mode */
+@media screen and (max-width: 420px) and (min-height: 1200px) {
+    :root {
+        --header-height: 35px;
+        --content-gap: 4px;
+        --card-padding: 6px;
+        --font-size-base: 12px;
+        --font-size-header: 14px;
+        --touch-target: 40px;
+    }
+}
+
+/* Mobile Mode */
+@media screen and (max-width: 768px) {
+    :root {
+        --header-height: 45px;
+        --content-gap: 6px;
+        --card-padding: 10px;
+        --font-size-base: 16px;
+        --font-size-header: 18px;
+        --touch-target: 48px;
+    }
+}
+
+body {
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+    background: #1a1a1a;
+    overflow: hidden;
+    height: 100vh;
+    font-size: var(--font-size-base);
+    line-height: 1.4;
+}
+
+.app-header {
+    padding: 6px var(--card-padding);
+    background: linear-gradient(135deg, #2c3547 0%, #1e2836 100%);
+    border-bottom: 2px solid #0ea5e9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: var(--header-height);
+    color: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+/* Vertical layout for narrow displays */
+.grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--content-gap);
+    height: calc(100vh - var(--header-height) - 30px);
+    padding: var(--content-gap);
+}
+
+/* For desktop/wide displays - horizontal layout */
+@media screen and (min-width: 1024px) {
+    .grid {
+        display: grid;
+        grid-template-columns: 240px 1fr 280px;
+        flex-direction: unset;
+    }
+}
+
+.card {
+    background: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.card-header {
+    background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+    color: #f1f5f9;
+    padding: var(--card-padding);
+    font-size: var(--font-size-header);
+    font-weight: 600;
+    border-bottom: 1px solid #0ea5e9;
+    font-weight:600;
+    text-transform:uppercase;
+    font-size:13px;
+    text-align:center;
+}
+
+.menu-section {
+    padding: var(--card-padding);
+    /* Avoid scrollbars unless absolutely needed; pagination will handle overflow */
+    overflow: hidden;
+    flex: 1;
+    background: #2a2a2a;
+}
+
+.menu-title {
+    font-size: calc(var(--font-size-base) - 2px);
+    text-transform: uppercase;
+    color: #94a3b8;
+    padding: var(--card-padding) 4px 4px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.option {
+    padding: var(--card-padding) 12px;
+    margin: 4px 0;
+    border: 2px solid #374151;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: var(--font-size-base);
+    transition: all 0.3s ease;
+    background: #374151;
+    color: #f1f5f9;
+    min-height: var(--touch-target);
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+}
+
+.option::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transition: left 0.6s;
+}
+
+.option:hover::before {
+    left: 100%;
+}
+
+.option:hover {
+    background: #4b5563;
+    border-color: #0ea5e9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+}
+
+.option.active {
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+    border-color: #0ea5e9;
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 4px 16px rgba(14, 165, 233, 0.4);
+}
+
+.option.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: #1f2937;
+    border-color: #374151;
+}
+
+.option.disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.back-arrow {
+    color: #94a3b8;
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+#viewer {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #1a1a1a;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Pressure sensors styling */
+.pressure-group {
+    padding: var(--card-padding);
+    background: #2a2a2a;
+}
+
+.pressure-label {
+    font-size: calc(var(--font-size-base) - 1px);
+    color: #94a3b8;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: var(--card-padding);
+    letter-spacing: 0.5px;
+}
+
+.pressure-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid #374151;
+    color: #f1f5f9;
+}
+
+.pressure-row:last-child {
+    border-bottom: none;
+}
+
+.pressure-value {
+    font-weight: 700;
+    font-size: var(--font-size-header);
+    color: #0ea5e9;
+    min-width: 50px;
+    text-align: right;
+}
+
+.device-info {
+    padding: var(--card-padding);
+    background: #2a2a2a;
+    color: #f1f5f9;
+    font-size: calc(var(--font-size-base) - 1px);
+}
+
+.device-info div {
+    margin-bottom: 4px;
+}
+
+/* Display mode selector */
+.display-mode-selector {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+    display: flex;
+    gap: 4px;
+    background: rgba(0,0,0,0.8);
+    padding: 4px;
+    border-radius: 6px;
+    backdrop-filter: blur(10px);
+}
+
+.mode-btn {
+    padding: 4px 8px;
+    background: #374151;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.mode-btn.active {
+    background: #0ea5e9;
+}
+
+.mode-btn:hover {
+    background: #4b5563;
+}
+
+/* Responsive adjustments for Waveshare display */
+@media screen and (max-width: 420px) and (min-height: 1200px) {
+    .grid {
+        gap: 2px;
+        padding: 2px;
+    }
+    
+    .option {
+        padding: 8px 10px;
+        margin: 2px 0;
+        font-size: 11px;
+        min-height: 36px;
+    }
+    
+    .pressure-row {
+        padding: 4px 0;
+        font-size: 11px;
+    }
+    
+    .pressure-value {
+        font-size: 13px;
+    }
+    
+    .app-header {
+        padding: 4px 6px;
+    }
+    
+    .card-header {
+        padding: 4px 6px;
+        font-size: 11px;
+    }
+}
+
+.interaction-content {
+    flex: 1;
+    overflow: hidden;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    color: #f1f5f9;
+}
+
+.status-dot {
+    display: inline-block;
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:#10b981;
+    margin-right:4px;
+}
+.app-footer{
+    height:40px;
+    padding:8px 16px;
+    background:#f8f9fa;
+    border-top:1px solid #e5e5e5;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:12px;
+    color:#6b7280;
+}
+.help-text{
+    padding:8px 12px;
+    font-size:12px;
+    color:#6b7280;
+    background:#f8f9fa;
+    border-top:1px solid #e5e5e5;
+}
+
+/* Menu pagination (to avoid scrolling the menu) */
+.menu-pagination{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin-top:6px;
+    padding-top:6px;
+    border-top:1px solid #374151;
+}
+.menu-pagination button{
+    flex:1;
+    min-height: calc(var(--touch-target) - 8px);
+    padding:6px 8px;
+    background:#1f2937;
+    color:#e5e7eb;
+    border:1px solid #374151;
+    border-radius:6px;
+    font-size:11px;
+    font-weight:600;
+    text-transform:uppercase;
+    cursor:pointer;
+}
+.menu-pagination button:hover{
+    background:#374151;
+}
+.menu-pagination button:disabled{
+    opacity:0.45;
+    cursor:not-allowed;
+}
+.menu-page-info{
+    min-width:54px;
+    text-align:center;
+    color:#94a3b8;
+    font-size:11px;
+}

@@ -1,5 +1,473 @@
-<!doctype html>
-<html>
-<body><h1>Strona PDF 14</h1>
-<p>Tu wstaw treść odpowiadającą stronie 14 z PDF (osobny plik HTML w iframe).</p></body>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Device Data</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #f87171 100%);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-size: 42px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .device-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .device-section {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .device-info {
+            display: grid;
+            gap: 15px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 500;
+            opacity: 0.8;
+            flex: 1;
+        }
+
+        .info-value {
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 12px;
+            border-radius: 15px;
+            text-align: right;
+            flex: 1;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 8px;
+        }
+
+        .status-ok { background: #10b981; }
+        .status-warning { background: #f59e0b; }
+        .status-error { background: #ef4444; }
+
+        .sensor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .sensor-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .sensor-name {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .sensor-value {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .sensor-unit {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .maintenance-section {
+            grid-column: 1 / -1;
+            margin-top: 20px;
+        }
+
+        .maintenance-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 8px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid;
+        }
+
+        .maintenance-overdue { border-left-color: #ef4444; }
+        .maintenance-due { border-left-color: #f59e0b; }
+        .maintenance-ok { border-left-color: #10b981; }
+
+        .maintenance-details {
+            flex: 1;
+        }
+
+        .maintenance-date {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .control-panel {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn.primary {
+            background: rgba(59, 130, 246, 0.8);
+            border-color: rgba(59, 130, 246, 1);
+        }
+
+        .btn.danger {
+            background: rgba(220, 38, 38, 0.8);
+            border-color: rgba(220, 38, 38, 1);
+        }
+
+        .current-device {
+            grid-column: 1 / -1;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .device-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .control-panel {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">🔧 Device Data</div>
+            <div class="subtitle">Informacje o urządzeniu, parametry i diagnostyka</div>
+        </div>
+
+        <div class="device-grid">
+            <div class="device-section current-device">
+                <div class="section-title">
+                    📱 Aktualnie Testowane Urządzenie
+                </div>
+                <div class="device-info">
+                    <div class="info-row">
+                        <span class="info-label">Model:</span>
+                        <span class="info-value">PSS-5000 Professional</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Numer seryjny:</span>
+                        <span class="info-value">PSS-5K-2024-0847</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Typ urządzenia:</span>
+                        <span class="info-value">Aparat oddechowy</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Status połączenia:</span>
+                        <span class="info-value">Połączony <span class="status-indicator status-ok"></span></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Ostatni test:</span>
+                        <span class="info-value">2024-08-19 14:30</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="device-section">
+                <div class="section-title">
+                    📊 Specyfikacja Techniczna
+                </div>
+                <div class="device-info">
+                    <div class="info-row">
+                        <span class="info-label">Ciśnienie robocze:</span>
+                        <span class="info-value">200 bar</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Pojemność butli:</span>
+                        <span class="info-value">6.8 L</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Temperatura pracy:</span>
+                        <span class="info-value">-30°C do +60°C</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Norma certyfikacji:</span>
+                        <span class="info-value">EN 137</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Rok produkcji:</span>
+                        <span class="info-value">2024</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="device-section">
+                <div class="section-title">
+                    ⚙️ Status Komponentów
+                </div>
+                <div class="device-info">
+                    <div class="info-row">
+                        <span class="info-label">Maska pełnotwarzowa:</span>
+                        <span class="info-value">OK <span class="status-indicator status-ok"></span></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Regulator oddechowy:</span>
+                        <span class="info-value">OK <span class="status-indicator status-ok"></span></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Zawór wydechowy:</span>
+                        <span class="info-value">Sprawdzić <span class="status-indicator status-warning"></span></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">System alarmowy:</span>
+                        <span class="info-value">OK <span class="status-indicator status-ok"></span></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Butla kompozytowa:</span>
+                        <span class="info-value">OK <span class="status-indicator status-ok"></span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="device-section">
+                <div class="section-title">
+                    📈 Aktualne Parametry
+                </div>
+                <div class="sensor-grid">
+                    <div class="sensor-card">
+                        <div class="sensor-name">Ciśnienie</div>
+                        <div class="sensor-value">195</div>
+                        <div class="sensor-unit">bar</div>
+                    </div>
+                    <div class="sensor-card">
+                        <div class="sensor-name">Temperatura</div>
+                        <div class="sensor-value">22.3</div>
+                        <div class="sensor-unit">°C</div>
+                    </div>
+                    <div class="sensor-card">
+                        <div class="sensor-name">Przepływ</div>
+                        <div class="sensor-value">42</div>
+                        <div class="sensor-unit">L/min</div>
+                    </div>
+                    <div class="sensor-card">
+                        <div class="sensor-name">Wilgotność</div>
+                        <div class="sensor-value">65</div>
+                        <div class="sensor-unit">%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="device-section maintenance-section">
+                <div class="section-title">
+                    🔧 Harmonogram Konserwacji
+                </div>
+                
+                <div class="maintenance-item maintenance-due">
+                    <div class="maintenance-details">
+                        <div><strong>Wymiana filtra powietrza</strong></div>
+                        <div class="maintenance-date">Termin: 2024-08-25 (za 6 dni)</div>
+                    </div>
+                    <div style="color: #f59e0b; font-weight: bold;">DUE</div>
+                </div>
+
+                <div class="maintenance-item maintenance-ok">
+                    <div class="maintenance-details">
+                        <div><strong>Przegląd okresowy</strong></div>
+                        <div class="maintenance-date">Wykonano: 2024-07-15 | Następny: 2024-10-15</div>
+                    </div>
+                    <div style="color: #10b981; font-weight: bold;">OK</div>
+                </div>
+
+                <div class="maintenance-item maintenance-ok">
+                    <div class="maintenance-details">
+                        <div><strong>Test szczelności butli</strong></div>
+                        <div class="maintenance-date">Wykonano: 2024-08-01 | Następny: 2025-08-01</div>
+                    </div>
+                    <div style="color: #10b981; font-weight: bold;">OK</div>
+                </div>
+
+                <div class="maintenance-item maintenance-overdue">
+                    <div class="maintenance-details">
+                        <div><strong>Kalibracja czujników</strong></div>
+                        <div class="maintenance-date">Przeterminowana od: 2024-08-10 (9 dni)</div>
+                    </div>
+                    <div style="color: #ef4444; font-weight: bold;">OVERDUE</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-panel">
+            <button class="btn" onclick="goBack()">← Powrót do Menu</button>
+            <button class="btn" onclick="refreshData()">🔄 Odśwież Dane</button>
+            <button class="btn primary" onclick="runDiagnostic()">🔍 Diagnostyka</button>
+            <button class="btn primary" onclick="exportReport()">📄 Raport PDF</button>
+            <button class="btn danger" onclick="calibrateDevice()">⚙️ Kalibracja</button>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'navigate',
+                    page: 12  // Return to Test Menu
+                }, '*');
+            }
+        }
+
+        function refreshData() {
+            // Simulate data refresh
+            const pressureValue = document.querySelector('.sensor-card .sensor-value');
+            const currentPressure = parseInt(pressureValue.textContent);
+            const newPressure = currentPressure + Math.floor(Math.random() * 10) - 5;
+            pressureValue.textContent = Math.max(180, Math.min(200, newPressure));
+            
+            console.log('Device data refreshed');
+            alert('Dane urządzenia zostały odświeżone');
+        }
+
+        function runDiagnostic() {
+            alert('Uruchamianie diagnostyki urządzenia...\n\nSprawdzanie:\n• Ciśnienie systemu\n• Szczelność\n• Czujniki\n• System alarmowy\n\nCzas trwania: ~3 minuty');
+            console.log('Running device diagnostic...');
+        }
+
+        function exportReport() {
+            alert('Generowanie raportu PDF...\n\nRaport będzie zawierał:\n• Dane techniczne urządzenia\n• Aktualne parametry\n• Status komponentów\n• Harmonogram konserwacji\n\nRaport zostanie zapisany w systemie.');
+            console.log('Exporting device report...');
+        }
+
+        function calibrateDevice() {
+            if (confirm('Rozpocząć kalibrację urządzenia?\n\nUwaga: Kalibracja może potrwać do 15 minut i wymaga odłączenia urządzenia od testów.')) {
+                alert('Uruchamianie procedury kalibracji...\n\nKroki:\n1. Sprawdzenie ciśnienia bazowego\n2. Kalibracja czujników\n3. Test szczelności\n4. Weryfikacja parametrów\n\nCzas trwania: 15 minut');
+                console.log('Starting device calibration...');
+            }
+        }
+
+        // Update parameters periodically
+        function updateParameters() {
+            const sensors = document.querySelectorAll('.sensor-value');
+            const pressure = sensors[0];
+            const temperature = sensors[1];
+            const flow = sensors[2];
+            const humidity = sensors[3];
+
+            // Simulate small variations
+            if (pressure) {
+                const current = parseFloat(pressure.textContent);
+                const variation = (Math.random() - 0.5) * 2;
+                pressure.textContent = Math.max(190, Math.min(200, current + variation)).toFixed(0);
+            }
+
+            if (temperature) {
+                const current = parseFloat(temperature.textContent);
+                const variation = (Math.random() - 0.5) * 0.4;
+                temperature.textContent = (current + variation).toFixed(1);
+            }
+
+            if (flow) {
+                const current = parseFloat(flow.textContent);
+                const variation = (Math.random() - 0.5) * 4;
+                flow.textContent = Math.max(38, Math.min(46, current + variation)).toFixed(0);
+            }
+
+            if (humidity) {
+                const current = parseFloat(humidity.textContent);
+                const variation = (Math.random() - 0.5) * 2;
+                humidity.textContent = Math.max(60, Math.min(70, current + variation)).toFixed(0);
+            }
+        }
+
+        // Initialize
+        setInterval(updateParameters, 5000); // Update every 5 seconds
+        console.log('Device Data page loaded successfully');
+    </script>
+</body>
 </html>

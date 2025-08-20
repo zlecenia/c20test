@@ -1,1 +1,596 @@
-<!doctype html><html><body><h1>Strona PDF 24</h1><p>Tu wstaw treść odpowiadającą stronie 24 z PDF (osobny plik HTML w iframe).</p></body></html>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #0f766e 0%, #14b8a6 50%, #5eead4 100%);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-size: 42px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .setup-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .setup-section {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='white' viewBox='0 0 16 16'%3e%3cpath d='m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #14b8a6;
+        }
+
+        .parameter-slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            outline: none;
+            margin: 10px 0;
+        }
+
+        .parameter-value {
+            text-align: center;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 15px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .test-summary {
+            grid-column: 1 / -1;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            margin-top: 20px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            font-weight: 500;
+            opacity: 0.8;
+        }
+
+        .summary-value {
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 15px;
+        }
+
+        .control-panel {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn.primary {
+            background: rgba(59, 130, 246, 0.8);
+            border-color: rgba(59, 130, 246, 1);
+        }
+
+        .btn.success {
+            background: rgba(16, 185, 129, 0.8);
+            border-color: rgba(16, 185, 129, 1);
+        }
+
+        .btn.warning {
+            background: rgba(245, 158, 11, 0.8);
+            border-color: rgba(245, 158, 11, 1);
+        }
+
+        .validation-message {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+
+        .validation-success {
+            background: rgba(16, 185, 129, 0.3);
+            border: 1px solid #10b981;
+            color: #10b981;
+        }
+
+        .validation-error {
+            background: rgba(239, 68, 68, 0.3);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+        }
+
+        @media (max-width: 768px) {
+            .setup-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .control-panel {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">⚙️ Setup Test</div>
+            <div class="subtitle">Konfiguracja parametrów i warunków testowania urządzenia</div>
+        </div>
+
+        <div class="setup-grid">
+            <div class="setup-section">
+                <div class="section-title">
+                    🔧 Parametry Urządzenia
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Model urządzenia:</label>
+                    <select class="form-control form-select" id="deviceModel">
+                        <option value="pss-5000">PSS-5000 Professional</option>
+                        <option value="pss-7000">PSS-7000 Advanced</option>
+                        <option value="ultra-elite">Ultra Elite</option>
+                        <option value="g1">Maska G1</option>
+                        <option value="pp-mask">Maska PP</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Numer seryjny:</label>
+                    <input type="text" class="form-control" id="serialNumber" 
+                           placeholder="np. PSS-5K-2024-0847" value="PSS-5K-2024-0847">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Operator:</label>
+                    <input type="text" class="form-control" id="operatorName" 
+                           placeholder="Imię i nazwisko operatora" value="admin">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Data ostatniego przeglądu:</label>
+                    <input type="date" class="form-control" id="lastInspection" value="2024-07-15">
+                </div>
+            </div>
+
+            <div class="setup-section">
+                <div class="section-title">
+                    🎯 Parametry Testu
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Ciśnienie testowe (bar):</label>
+                    <input type="range" class="parameter-slider" id="testPressure" 
+                           min="150" max="220" value="195" oninput="updatePressureValue(this.value)">
+                    <div class="parameter-value" id="pressureValue">195 bar</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Czas testu (minuty):</label>
+                    <input type="range" class="parameter-slider" id="testDuration" 
+                           min="5" max="30" value="15" oninput="updateDurationValue(this.value)">
+                    <div class="parameter-value" id="durationValue">15 min</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tolerancja błędu (%):</label>
+                    <input type="range" class="parameter-slider" id="errorTolerance" 
+                           min="1" max="10" value="5" oninput="updateToleranceValue(this.value)">
+                    <div class="parameter-value" id="toleranceValue">5%</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Temperatura otoczenia (°C):</label>
+                    <input type="number" class="form-control" id="ambientTemp" 
+                           min="-10" max="50" value="22" step="0.1">
+                </div>
+            </div>
+
+            <div class="setup-section">
+                <div class="section-title">
+                    ✅ Testy do Wykonania
+                </div>
+
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" checked> Test szczelności
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" checked> Test ciśnienia
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox"> Test systemu alarmowego
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" checked> Test regulatora
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox"> Test zaworu wydechowego
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox"> Test komunikacji
+                    </label>
+                </div>
+
+                <div class="form-group" style="margin-top: 20px;">
+                    <label class="form-label">Priorytet testu:</label>
+                    <select class="form-control form-select" id="testPriority">
+                        <option value="standard">Standardowy</option>
+                        <option value="high">Wysoki</option>
+                        <option value="critical">Krytyczny</option>
+                        <option value="maintenance">Konserwacja</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="setup-section">
+                <div class="section-title">
+                    📋 Dodatkowe Opcje
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tryb pracy:</label>
+                    <select class="form-control form-select" id="workMode">
+                        <option value="auto">Automatyczny</option>
+                        <option value="manual">Manualny</option>
+                        <option value="assisted">Wspomagany</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Raportowanie:</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" checked> Raport PDF
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox"> Raport CSV
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" checked> Logowanie zdarzeń
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Uwagi dodatkowe:</label>
+                    <textarea class="form-control" id="additionalNotes" rows="3" 
+                              placeholder="Dodatkowe informacje lub uwagi dotyczące testu..."></textarea>
+                </div>
+            </div>
+
+            <div class="setup-section test-summary">
+                <div class="section-title">
+                    📊 Podsumowanie Konfiguracji
+                </div>
+                
+                <div class="summary-item">
+                    <span class="summary-label">Urządzenie:</span>
+                    <span class="summary-value" id="summaryDevice">PSS-5000 Professional</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Operator:</span>
+                    <span class="summary-value" id="summaryOperator">admin</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Liczba testów:</span>
+                    <span class="summary-value" id="summaryTestCount">3</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Szacowany czas:</span>
+                    <span class="summary-value" id="summaryTime">15 min</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Priorytet:</span>
+                    <span class="summary-value" id="summaryPriority">Standardowy</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="validation-message" id="validationMessage"></div>
+
+        <div class="control-panel">
+            <button class="btn" onclick="goBack()">← Powrót do Menu</button>
+            <button class="btn warning" onclick="resetForm()">🔄 Reset</button>
+            <button class="btn primary" onclick="saveConfiguration()">💾 Zapisz Konfigurację</button>
+            <button class="btn success" onclick="startTest()">🚀 Rozpocznij Test</button>
+        </div>
+    </div>
+
+    <script>
+        function updatePressureValue(value) {
+            document.getElementById('pressureValue').textContent = value + ' bar';
+            updateSummary();
+        }
+
+        function updateDurationValue(value) {
+            document.getElementById('durationValue').textContent = value + ' min';
+            document.getElementById('summaryTime').textContent = value + ' min';
+        }
+
+        function updateToleranceValue(value) {
+            document.getElementById('toleranceValue').textContent = value + '%';
+        }
+
+        function updateSummary() {
+            const deviceModel = document.getElementById('deviceModel');
+            const operatorName = document.getElementById('operatorName');
+            const testPriority = document.getElementById('testPriority');
+            
+            document.getElementById('summaryDevice').textContent = 
+                deviceModel.options[deviceModel.selectedIndex].text;
+            document.getElementById('summaryOperator').textContent = operatorName.value || 'admin';
+            document.getElementById('summaryPriority').textContent = 
+                testPriority.options[testPriority.selectedIndex].text;
+
+            // Count selected tests
+            const checkedTests = document.querySelectorAll('.checkbox-item input[type="checkbox"]:checked');
+            document.getElementById('summaryTestCount').textContent = checkedTests.length;
+        }
+
+        function validateForm() {
+            const serialNumber = document.getElementById('serialNumber').value;
+            const operatorName = document.getElementById('operatorName').value;
+            
+            if (!serialNumber.trim()) {
+                showValidationMessage('Numer seryjny jest wymagany!', 'error');
+                return false;
+            }
+            
+            if (!operatorName.trim()) {
+                showValidationMessage('Nazwa operatora jest wymagana!', 'error');
+                return false;
+            }
+
+            const checkedTests = document.querySelectorAll('.checkbox-item input[type="checkbox"]:checked');
+            if (checkedTests.length === 0) {
+                showValidationMessage('Wybierz co najmniej jeden test do wykonania!', 'error');
+                return false;
+            }
+
+            return true;
+        }
+
+        function showValidationMessage(message, type) {
+            const msgElement = document.getElementById('validationMessage');
+            msgElement.textContent = message;
+            msgElement.className = 'validation-message validation-' + type;
+            msgElement.style.display = 'block';
+            
+            setTimeout(() => {
+                msgElement.style.display = 'none';
+            }, 5000);
+        }
+
+        function goBack() {
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'navigate',
+                    page: 12  // Return to Test Menu
+                }, '*');
+            }
+        }
+
+        function resetForm() {
+            if (confirm('Czy na pewno chcesz zresetować wszystkie ustawienia?')) {
+                document.getElementById('deviceModel').selectedIndex = 0;
+                document.getElementById('serialNumber').value = 'PSS-5K-2024-0847';
+                document.getElementById('operatorName').value = 'admin';
+                document.getElementById('testPressure').value = 195;
+                document.getElementById('testDuration').value = 15;
+                document.getElementById('errorTolerance').value = 5;
+                document.getElementById('ambientTemp').value = 22;
+                document.getElementById('testPriority').selectedIndex = 0;
+                document.getElementById('workMode').selectedIndex = 0;
+                document.getElementById('additionalNotes').value = '';
+                
+                updatePressureValue(195);
+                updateDurationValue(15);
+                updateToleranceValue(5);
+                updateSummary();
+                
+                showValidationMessage('Formularz został zresetowany', 'success');
+            }
+        }
+
+        function saveConfiguration() {
+            if (!validateForm()) return;
+            
+            const config = {
+                deviceModel: document.getElementById('deviceModel').value,
+                serialNumber: document.getElementById('serialNumber').value,
+                operator: document.getElementById('operatorName').value,
+                testPressure: document.getElementById('testPressure').value,
+                testDuration: document.getElementById('testDuration').value,
+                errorTolerance: document.getElementById('errorTolerance').value,
+                ambientTemp: document.getElementById('ambientTemp').value,
+                testPriority: document.getElementById('testPriority').value,
+                workMode: document.getElementById('workMode').value,
+                notes: document.getElementById('additionalNotes').value
+            };
+            
+            console.log('Saving configuration:', config);
+            showValidationMessage('Konfiguracja została zapisana pomyślnie!', 'success');
+        }
+
+        function startTest() {
+            if (!validateForm()) return;
+            
+            if (confirm('Rozpocząć test z aktualną konfiguracją?\n\nTest zostanie uruchomiony zgodnie z wybranymi parametrami.')) {
+                showValidationMessage('Uruchamianie testu...', 'success');
+                
+                setTimeout(() => {
+                    if (window.parent !== window) {
+                        window.parent.postMessage({
+                            type: 'navigate',
+                            page: 26  // Go to Test Flow
+                        }, '*');
+                    }
+                }, 2000);
+            }
+        }
+
+        // Initialize form
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add event listeners for real-time updates
+            document.getElementById('deviceModel').addEventListener('change', updateSummary);
+            document.getElementById('operatorName').addEventListener('input', updateSummary);
+            document.getElementById('testPriority').addEventListener('change', updateSummary);
+            
+            // Add event listeners for checkboxes
+            const checkboxes = document.querySelectorAll('.checkbox-item input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.addEventListener('change', updateSummary));
+            
+            updateSummary();
+            console.log('Setup Test page loaded successfully');
+        });
+    </script>
+</body>
+</html>

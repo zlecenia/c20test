@@ -1,1 +1,185 @@
-<!doctype html><html><body><h1>Strona PDF 16</h1><p>Tu wstaw treść odpowiadającą stronie 16 z PDF (osobny plik HTML w iframe).</p></body></html>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Firmware</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #581c87 0%, #7c3aed 50%, #a855f7 100%);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .title {
+            font-size: 42px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .update-status {
+            margin: 30px 0;
+            padding: 25px;
+            background: rgba(16, 185, 129, 0.2);
+            border: 2px solid #10b981;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .status-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .status-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .status-date {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+
+        .status-description {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .version-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .version-card {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .version-label {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+
+        .version-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .control-panel {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn.primary {
+            background: rgba(59, 130, 246, 0.8);
+            border-color: rgba(59, 130, 246, 1);
+        }
+
+        @media (max-width: 768px) {
+            .version-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">🔄 Update Firmware</div>
+        <div class="subtitle">Zarządzanie oprogramowaniem układowym systemu</div>
+
+        <div class="update-status">
+            <div class="status-icon">✅</div>
+            <div class="status-title">Oprogramowanie aktualne</div>
+            <div class="status-date">Ostatnia aktualizacja: 11.07.2026</div>
+            <div class="status-description">
+                System został pomyślnie zaktualizowany i jest gotowy do pracy
+            </div>
+        </div>
+
+        <div class="version-info">
+            <div class="version-card">
+                <div class="version-label">Wersja systemu</div>
+                <div class="version-value">2.1.0</div>
+            </div>
+            <div class="version-card">
+                <div class="version-label">Build</div>
+                <div class="version-value">20260711</div>
+            </div>
+        </div>
+
+        <div class="control-panel">
+            <button class="btn" onclick="goBack()">← Powrót</button>
+            <button class="btn primary" onclick="checkUpdates()">🔍 Sprawdź aktualizacje</button>
+        </div>
+    </div>
+
+    <script>
+        function checkUpdates() {
+            alert('Sprawdzono aktualizacje.\n\nAktualna wersja 2.1.0 jest najnowsza.\nBrak dostępnych aktualizacji.');
+        }
+
+        function goBack() {
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'navigate',
+                    page: 5  // Return to Service Menu
+                }, '*');
+            }
+        }
+
+        console.log('Update Firmware page loaded - Version: 2.1.0 (11.07.2026)');
+    </script>
+</body>
+</html>

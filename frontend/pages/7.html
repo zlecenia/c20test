@@ -1,5 +1,684 @@
-<!doctype html>
-<html>
-<body><h1>Strona PDF 7</h1>
-<p>Tu wstaw treść odpowiadającą stronie 7 z PDF (osobny plik HTML w iframe).</p></body>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Steps</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #064e3b 0%, #059669 50%, #10b981 100%);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .title {
+            font-size: 42px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .test-progress {
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .progress-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .progress-info {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            border-radius: 6px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .steps-container {
+            display: grid;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .step-card {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .step-card.active {
+            background: rgba(16, 185, 129, 0.3);
+            border-color: #10b981;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .step-card.completed {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: #34d399;
+            opacity: 0.8;
+        }
+
+        .step-card.pending {
+            opacity: 0.6;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .step-number {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .step-number.active {
+            background: #10b981;
+        }
+
+        .step-number.completed {
+            background: #34d399;
+        }
+
+        .step-title {
+            font-size: 20px;
+            font-weight: bold;
+            flex: 1;
+        }
+
+        .step-status {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .step-status.active {
+            background: #10b981;
+        }
+
+        .step-status.completed {
+            background: #34d399;
+        }
+
+        .step-description {
+            font-size: 16px;
+            margin: 15px 0;
+            line-height: 1.5;
+        }
+
+        .step-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 15px;
+            border-radius: 10px;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .detail-value {
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .step-instructions {
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(59, 130, 246, 0.2);
+            border: 2px solid rgba(59, 130, 246, 0.5);
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .instructions-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .instructions-list {
+            font-size: 13px;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        .control-panel {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn.primary {
+            background: rgba(59, 130, 246, 0.8);
+            border-color: rgba(59, 130, 246, 1);
+        }
+
+        .btn.success {
+            background: rgba(16, 185, 129, 0.8);
+            border-color: rgba(16, 185, 129, 1);
+        }
+
+        .btn.danger {
+            background: rgba(239, 68, 68, 0.8);
+            border-color: rgba(239, 68, 68, 1);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .test-results {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            display: none;
+        }
+
+        .test-results.show {
+            display: block;
+        }
+
+        .results-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .results-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .result-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .result-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .result-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .step-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .control-panel {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">📋 Test Steps</div>
+        <div class="subtitle">Sekwencyjne kroki wykonywania testu diagnostycznego</div>
+
+        <div class="test-progress">
+            <div class="progress-header">
+                <div class="progress-title">Postęp testu</div>
+                <div class="progress-info">Krok <span id="currentStep">1</span> z <span id="totalSteps">6</span></div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="steps-container">
+            <div class="step-card active" id="step1">
+                <div class="step-header">
+                    <div class="step-number active">1</div>
+                    <div class="step-title">Przygotowanie urządzenia</div>
+                    <div class="step-status active">W trakcie</div>
+                </div>
+                <div class="step-description">
+                    Sprawdzenie stanu technicznego urządzenia i przygotowanie do testu. Weryfikacja podstawowych parametrów systemu.
+                </div>
+                <div class="step-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Czas wykonania:</span>
+                        <span class="detail-value">2-3 min</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Wymagania:</span>
+                        <span class="detail-value">Podstawowe</span>
+                    </div>
+                </div>
+                <div class="step-instructions">
+                    <div class="instructions-title">📝 Instrukcje:</div>
+                    <div class="instructions-list">
+                        • Sprawdź połączenia pneumatyczne<br>
+                        • Zweryfikuj stan baterii i zasilania<br>
+                        • Ustaw urządzenie w pozycji testowej
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-card pending" id="step2">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Test szczelności</div>
+                    <div class="step-status">Oczekuje</div>
+                </div>
+                <div class="step-description">
+                    Sprawdzenie szczelności systemu pneumatycznego pod różnymi ciśnieniami roboczymi.
+                </div>
+                <div class="step-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Czas wykonania:</span>
+                        <span class="detail-value">3-4 min</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Ciśnienie testowe:</span>
+                        <span class="detail-value">0.5-25 bar</span>
+                    </div>
+                </div>
+                <div class="step-instructions">
+                    <div class="instructions-title">📝 Instrukcje:</div>
+                    <div class="instructions-list">
+                        • Podłącz urządzenie do stanowiska testowego<br>
+                        • Wykonaj test pod ciśnieniem roboczym<br>
+                        • Sprawdź nieszczelności wizualnie i audytywnie
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-card pending" id="step3">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Test regulatora</div>
+                    <div class="step-status">Oczekuje</div>
+                </div>
+                <div class="step-description">
+                    Diagnostyka działania regulatora ciśnienia i systemów bezpieczeństwa.
+                </div>
+                <div class="step-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Czas wykonania:</span>
+                        <span class="detail-value">4-5 min</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Parametry:</span>
+                        <span class="detail-value">Precyzyjne</span>
+                    </div>
+                </div>
+                <div class="step-instructions">
+                    <div class="instructions-title">📝 Instrukcje:</div>
+                    <div class="instructions-list">
+                        • Sprawdź działanie regulatora głównego<br>
+                        • Przetestuj zawory bezpieczeństwa<br>
+                        • Zweryfikuj parametry ciśnienia roboczego
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-card pending" id="step4">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Test alarmów</div>
+                    <div class="step-status">Oczekuje</div>
+                </div>
+                <div class="step-description">
+                    Sprawdzenie funkcjonalności systemów alarmowych i ostrzegawczych.
+                </div>
+                <div class="step-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Czas wykonania:</span>
+                        <span class="detail-value">2-3 min</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Testy audio:</span>
+                        <span class="detail-value">90-120 dB</span>
+                    </div>
+                </div>
+                <div class="step-instructions">
+                    <div class="instructions-title">📝 Instrukcje:</div>
+                    <div class="instructions-list">
+                        • Przetestuj alarm niskiego ciśnienia<br>
+                        • Sprawdź sygnał ostrzegawczy końca pracy<br>
+                        • Zweryfikuj działanie sygnalizacji wizualnej
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-card pending" id="step5">
+                <div class="step-header">
+                    <div class="step-number">5</div>
+                    <div class="step-title">Test elektroniki</div>
+                    <div class="step-status">Oczekuje</div>
+                </div>
+                <div class="step-description">
+                    Diagnostyka układów elektronicznych, czujników i systemów sterujących.
+                </div>
+                <div class="step-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Czas wykonania:</span>
+                        <span class="detail-value">3-4 min</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Czujniki:</span>
+                        <span class="detail-value">Wszystkie</span>
+                    </div>
+                </div>
+                <div class="step-instructions">
+                    <div class="instructions-title">📝 Instrukcje:</div>
+                    <div class="instructions-list">
+                        • Sprawdź czujniki ciśnienia<br>
+                        • Przetestuj układy sterujące<br>
+                        • Zweryfikuj komunikację z systemem głównym
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-card pending" id="step6">
+                <div class="step-header">
+                    <div class="step-number">6</div>
+                    <div class="step-title">Finalizacja i raport</div>
+                    <div class="step-status">Oczekuje</div>
+                </div>
+                <div class="step-description">
+                    Podsumowanie wyników testów i generowanie raportu końcowego z certyfikatem.
+                </div>
+                <div class="step-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Czas wykonania:</span>
+                        <span class="detail-value">1-2 min</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Dokumentacja:</span>
+                        <span class="detail-value">Automatyczna</span>
+                    </div>
+                </div>
+                <div class="step-instructions">
+                    <div class="instructions-title">📝 Instrukcje:</div>
+                    <div class="instructions-list">
+                        • Przejrzyj wszystkie wyniki testów<br>
+                        • Wygeneruj raport końcowy<br>
+                        • Wydrukuj certyfikat lub zapisz elektronicznie
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-results" id="testResults">
+            <div class="results-title">🎯 Wyniki testu</div>
+            <div class="results-summary">
+                <div class="result-item">
+                    <div class="result-value">✅</div>
+                    <div class="result-label">Status ogólny</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-value">6/6</div>
+                    <div class="result-label">Kroki ukończone</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-value">98%</div>
+                    <div class="result-label">Skuteczność</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-value">15 min</div>
+                    <div class="result-label">Czas wykonania</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-panel">
+            <button class="btn" onclick="goBack()">← Powrót do Test Menu</button>
+            <button class="btn primary" onclick="nextStep()" id="nextBtn">➡️ Następny krok</button>
+            <button class="btn success" onclick="startTest()" id="startBtn">🚀 Rozpocznij test</button>
+            <button class="btn danger" onclick="stopTest()" id="stopBtn" style="display: none;">🛑 Przerwij test</button>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let totalSteps = 6;
+        let testRunning = false;
+
+        function updateProgress() {
+            const progressFill = document.getElementById('progressFill');
+            const currentStepSpan = document.getElementById('currentStep');
+            
+            const progress = ((currentStep - 1) / totalSteps) * 100;
+            progressFill.style.width = `${progress}%`;
+            currentStepSpan.textContent = currentStep;
+        }
+
+        function updateStepStatus(stepNumber, status) {
+            const stepCard = document.getElementById(`step${stepNumber}`);
+            const stepNum = stepCard.querySelector('.step-number');
+            const stepStatus = stepCard.querySelector('.step-status');
+            
+            // Remove all status classes
+            stepCard.classList.remove('active', 'completed', 'pending');
+            stepNum.classList.remove('active', 'completed');
+            stepStatus.classList.remove('active', 'completed');
+            
+            // Add new status
+            if (status === 'active') {
+                stepCard.classList.add('active');
+                stepNum.classList.add('active');
+                stepStatus.classList.add('active');
+                stepStatus.textContent = 'W trakcie';
+            } else if (status === 'completed') {
+                stepCard.classList.add('completed');
+                stepNum.classList.add('completed');
+                stepStatus.classList.add('completed');
+                stepStatus.textContent = '✅ Ukończono';
+                stepNum.textContent = '✓';
+            } else {
+                stepCard.classList.add('pending');
+                stepStatus.textContent = 'Oczekuje';
+            }
+        }
+
+        function nextStep() {
+            if (!testRunning) return;
+            
+            if (currentStep <= totalSteps) {
+                // Complete current step
+                updateStepStatus(currentStep, 'completed');
+                
+                currentStep++;
+                
+                if (currentStep <= totalSteps) {
+                    // Activate next step
+                    updateStepStatus(currentStep, 'active');
+                    updateProgress();
+                } else {
+                    // Test completed
+                    completeTest();
+                }
+            }
+        }
+
+        function startTest() {
+            if (confirm('Rozpocząć sekwencję testową?\n\nTest będzie wykonywany krok po kroku zgodnie z procedurą diagnostyczną.')) {
+                testRunning = true;
+                currentStep = 1;
+                
+                // Update UI
+                updateStepStatus(1, 'active');
+                updateProgress();
+                
+                // Update buttons
+                document.getElementById('startBtn').style.display = 'none';
+                document.getElementById('nextBtn').style.display = 'inline-block';
+                document.getElementById('stopBtn').style.display = 'inline-block';
+                
+                console.log('Test sequence started');
+            }
+        }
+
+        function stopTest() {
+            if (confirm('Czy na pewno chcesz przerwać test?\n\n⚠️ Postęp zostanie utracony i test trzeba będzie rozpocząć od nowa.')) {
+                testRunning = false;
+                currentStep = 1;
+                
+                // Reset all steps
+                for (let i = 1; i <= totalSteps; i++) {
+                    updateStepStatus(i, 'pending');
+                    // Reset step numbers
+                    const stepNum = document.getElementById(`step${i}`).querySelector('.step-number');
+                    stepNum.textContent = i;
+                }
+                
+                updateProgress();
+                
+                // Update buttons
+                document.getElementById('startBtn').style.display = 'inline-block';
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('stopBtn').style.display = 'none';
+                document.getElementById('testResults').classList.remove('show');
+                
+                console.log('Test sequence stopped');
+            }
+        }
+
+        function completeTest() {
+            testRunning = false;
+            
+            // Show results
+            document.getElementById('testResults').classList.add('show');
+            
+            // Update buttons
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('stopBtn').style.display = 'none';
+            document.getElementById('startBtn').style.display = 'inline-block';
+            document.getElementById('startBtn').textContent = '🔄 Nowy test';
+            
+            updateProgress();
+            
+            setTimeout(() => {
+                alert('Test został zakończony pomyślnie!\n\n✅ Wszystkie kroki wykonane\n📊 Wyniki zapisane w systemie\n📋 Raport dostępny do wydruku\n\nUrządzenie przeszło pozytywnie test diagnostyczny.');
+                console.log('Test sequence completed successfully');
+            }, 1000);
+        }
+
+        function goBack() {
+            if (testRunning && !confirm('Test jest w trakcie wykonywania.\n\nCzy na pewno chcesz opuścić stronę?\nPostęp zostanie utracony.')) {
+                return;
+            }
+            
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'navigate',
+                    page: 12  // Return to Test Menu
+                }, '*');
+            }
+        }
+
+        // Initialize page
+        console.log('Test Steps page loaded successfully');
+        updateProgress();
+    </script>
+</body>
 </html>
